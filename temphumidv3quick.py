@@ -83,7 +83,7 @@ class getdata():  # get required data in 1 call
                 time_text.write(checktime_format)
                 time_text.close()
             print('sending date from date_recal exception')
-			return checktime
+            return checktime
 # Function not part of the class but is called in the program immediately after
 # the above class
 def hd5file(fname, timestamp_s, hdftemp, hdfhumidy):

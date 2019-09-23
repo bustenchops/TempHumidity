@@ -60,7 +60,7 @@ class getdata():  # get required data in 1 call
     def save_date(self):
         with open('textsave.txt', 'w') as time_text:
             checktime = datetime.datetime.now()
-            checktime_format = datetime.date.strftime(day_data1, '%Y %m %d')
+            checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
             print(checktime_format)
             time_text.write(checktime_format)
             time_text.close()

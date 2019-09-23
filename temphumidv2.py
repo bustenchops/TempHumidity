@@ -67,11 +67,12 @@ class getdata():  # get required data in 1 call
 
     def date_recall(self):
         try:
-            os.path.isfile('textsave.txt')
+            # os.path.isfile('textsave.txt')
             with open('textsave.txt', 'r') as time_read:
                 text = time_read.read()
                 recalldate = datetime.datetime.strptime(text, '%Y %m %d')
                 time_read.close()
+            print('sending recalldate')
             return recalldate
         except:
             with open('textsave.txt', 'w') as time_text:

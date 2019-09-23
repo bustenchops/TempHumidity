@@ -77,10 +77,12 @@ class getdata():  # get required data in 1 call
             with open('textsave.txt', 'w') as time_text:
                 checktime = datetime.datetime.now()
                 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
+                print('init of textsave')
                 print(checktime_format)
+
                 time_text.write(checktime_format)
                 time_text.close()
-
+            return checktime_format
 # Function not part of the class but is called in the program immediately after
 # the above class
 def hd5file(fname, timestamp_s, hdftemp, hdfhumidy):

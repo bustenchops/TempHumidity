@@ -31,7 +31,7 @@ class getdata():  # get required data in 1 call
     def doit(self):
         ttt = float(self.tempdata)
         hhh = float(self.humidata)
-        return hhh, ttt
+        return ttt, hhh
 
 # parse out the timestamp from the data and return it to be used in hd5 file
     # def times(self):

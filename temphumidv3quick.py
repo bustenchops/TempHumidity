@@ -16,11 +16,11 @@ class getdata():  # get required data in 1 call
         self.pi = pigpio.pi()
         self.sampledata = DHT22.sensor(self.pi, 4)
         print('start the sensor')
-        print('trigger')
+        print('trigger1')
         #time.sleep(2)
         self.sampledata.trigger()
         time.sleep(2)
-        print('trigger')
+        print('trigger2 2s later')
         self.sampledata.trigger()
         self.current = time.time()
         self.tempdata = '{:3.2f}'.format(self.sampledata.temperature() / 1.)
@@ -40,6 +40,7 @@ class getdata():  # get required data in 1 call
 
     def stringtime(self):
         goodtimestring = int(self.current)
+        print('time frome getdata init')
         print(goodtimestring)
         return goodtimestring
 
@@ -60,7 +61,8 @@ class getdata():  # get required data in 1 call
     def save_date(self):
         with open('textsave.txt', 'w') as time_text:
             checktime = datetime.datetime.now()
-            checktime_format = datetime.date.strftime(day_data1, '%Y %m %d')
+            checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
+            print('date from save_date')
             print(checktime_format)
             time_text.write(checktime_format)
             time_text.close()
@@ -72,17 +74,16 @@ class getdata():  # get required data in 1 call
                 text = time_read.read()
                 recalldate = datetime.datetime.strptime(text, '%Y %m %d')
                 time_read.close()
+            print('sending recalldate from date_recall')
             return recalldate
         except:
             with open('textsave.txt', 'w') as time_text:
                 checktime = datetime.datetime.now()
                 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
-                print('init of textsave')
-                print(checktime_format)
-                print('saving init')
                 time_text.write(checktime_format)
                 time_text.close()
-            return checktime
+            print('sending date from date_recal exception')
+			return checktime
 # Function not part of the class but is called in the program immediately after
 # the above class
 def hd5file(fname, timestamp_s, hdftemp, hdfhumidy):
@@ -91,11 +92,13 @@ def hd5file(fname, timestamp_s, hdftemp, hdfhumidy):
         os.path.isfile(fname)
         print('opening file')
         aft = os.path.isfile(fname)
+        print('if HD5F file present')
         print(aft)
         with h5py.File(fname, 'a') as f:
             # temptemp = 100
             # temphumidy = 100
             num_timestamp = len(f['dailydata/temperature_C'])
+            print('size of the HD5F array')
             print(num_timestamp)
             f['dailydata/temperature_C'].resize((f['dailydata/temperature_C'].shape[0] + 1, f['dailydata/temperature_C'].shape[1]))
             f['dailydata/humidity'].resize((f['dailydata/humidity'].shape[0] + 1, f['dailydata/humidity'].shape[1]))
@@ -150,11 +153,10 @@ class countdown():
 # while loop that repeatedly checks the wait time and sets the inter-interval check time
     def threadtimer(self, delay_, datatim):
         print('Starting...')
-        print('Here we go...')
         while self.waittime() is True:
-            print('true')
+            print('waiting for timer')
             time.sleep(2)
-        print('it works')
+        print('DING FRIES ARE DONE')
 
 # quick method to print out the variables to see if things are working
 # def testoutputs():
@@ -197,7 +199,7 @@ class storedata():
 
     def movedaily(self):
         if os.path.exists(self.daily):
-            print('exists')
+            print('daily directory exists')
             if os.path.isfile(self.filedate_):
                 os.system('mv /home/pi/PIGPIO/*.hdf5 ' + self.daily_)
         else:
@@ -210,14 +212,14 @@ class storedata():
 
         if self.epoch_ == 'daily':
             if os.path.exists(self.dailyplot):
-                print('exists')
+                print('daily plot directory exists')
             # put daily plot here
             else:
                 os.makedirs(self.dailyplot)
             # put daily plot here
         if self.epoch_ == 'weekly':
             if os.path.exists(self.weeklyplot_): #  + self.year_ + '/week_' + self.week_):
-                print('exists')
+                print('weekly plot directory exists')
             # put weekly plot here
             else:
                 os.makedirs(self.weeklyplot_) #  + self.year_ + '/week_' + self.week_)
@@ -225,18 +227,18 @@ class storedata():
 
         if self.epoch_ == 'monthly':
             if os.path.exists(self.monthlyplot_ ): # + self.year_ + '/month_' + self.month_):
-                print('exists')
+                print('montly plot directory exists')
             # put monthly plot here
             else:
                 os.makedirs(self.monthlyplot_) # + self.year_ + '/month_' + self.month_)
             # put monthly plot here
 
         if self.epoch_ == 'yearly':
-                    if os.path.exists(self.yearlyplot_): #  + self.year_):
-                        print('exists')
+            if os.path.exists(self.yearlyplot_): #  + self.year_):
+                print('yearly plot directory exists')
             # put yearly plot here
-                    else:
-                        os.makedirs(self.yearlyplot_) #  + self.year_)
+            else:
+                os.makedirs(self.yearlyplot_) #  + self.year_)
             # put yearly plot here
 
 # test excution code
@@ -267,8 +269,6 @@ class amassdata():
         if self.timepan == 'weekly':
             self.year_j = datetime.date.strftime(self.time_j, '%Y')
             self.week_j = datetime.date.strftime(self.time_j, '%U')
-            # os.system('cp -R ' + self.dest_j + self.daily_j + self.year_j + '*-week_' + self.week_j + '.hdf5 /home/pi/data')
-            # quickname = self.year_j + '*-week_' + self.week_j + '.hdf5'
             quickname = self.daily_j + self.year_j + '*-week_' + self.week_j + '.hdf5'
             self.name_j = datetime.date.strftime(self.time_j, '%Y-week_%U_data.hdf5')
             self.filename_ = self.weeklyplot_j + self.name_j
@@ -277,8 +277,6 @@ class amassdata():
         if self.timepan == 'monthly':
             self.year_j = datetime.date.strftime(self.time_j, '%Y')
             self.month_j = datetime.date.strftime(self.time_j, '%m')
-            # os.system('cp -R ' + self.dest_j + self.daily_j + self.year_j + '-' + self.month_j + '*.hdf5 /home/pi/data')
-            # quickname = self.year_j + '-' + self.month_j + '*.hdf5'
             quickname = self.daily_j + self.year_j + '-' + self.month_j + '*.hdf5'
             self.name_j = datetime.date.strftime(self.time_j, '%Y-%m_data.hdf5')
             self.filename_ = self.monthlyplot_j + self.name_j
@@ -286,8 +284,6 @@ class amassdata():
 
         if self.timepan == 'yearly':
             self.year_j = datetime.date.strftime(self.time_j, '%Y')
-            # os.system('cp -R ' + self.dest_j + self.daily_j + self.year_j + '*.hdf5 /home/pi/data')
-            # quickname = self.year_j + '*.hdf5'
             quickname = self.daily_j + self.year_j + '*.hdf5'
             self.name_j = datetime.date.strftime(self.time_j, '%Y_data.hdf5')
             self.filename_ = self.yearlyplot_j + self.name_j
@@ -337,7 +333,7 @@ class letsplot():
     def __init__(self):
         self.delta_plot = datetime.timedelta(days=1)
         self.time_plot = datetime.datetime.now() - self.delta_plot
-        # print(self.time_plot)
+
 
     def plotprep(self, plotdate):
         self.timespan = plotdate
@@ -348,7 +344,7 @@ class letsplot():
             self.month_data = datetime.date.strftime(self.time_plot, '%m')
             self.year_data = datetime.date.strftime(self.time_plot, '%Y')
             fastname = '/home/pi/data/daily/' + self.year_data + '-' + self.month_data + '-' + self.day_data + '*.hdf5'
-            # print(fastname)
+
             self.glob_data_ = glob.glob(fastname)
             self.name_data = '/home/pi/data/dailyplot/' + datetime.date.strftime(self.time_plot, 'plot_%Y-%m-%d-week_%U.hdf5')
             self.name_dataparse = '/home/pi/data/dailyplot/' + datetime.date.strftime(self.time_plot, 'plot_%Y-%m-%d-week_%U.pdf')
@@ -356,18 +352,13 @@ class letsplot():
 
         if self.timespan is 'weekly':
             self.glob_data_ = None
-            # print(self.glob_data_)
             self.week_data = datetime.date.strftime(self.time_plot, '%U')
             self.month_data = datetime.date.strftime(self.time_plot, '%m')
             self.year_data = datetime.date.strftime(self.time_plot, '%Y')
             fastname = '/home/pi/data/weeklyplot/' + self.year_data + '*' + self.week_data + '*.hdf5'
-            # print(fastname)
             self.glob_data_ = glob.glob(fastname)
-            # print(self.glob_data_)
             self.name_data = '/home/pi/data/weeklyplot/' + datetime.date.strftime(self.time_plot, 'plot_%Y-week_%U.hdf5')
-            # print(self.name_data)
             self.name_dataparse = '/home/pi/data/weeklyplot/' + datetime.date.strftime(self.time_plot, 'plot_%Y-week_%U.pdf')
-            # print(self.name_dataparse)
             self.plotit(self.name_dataparse)
 
         if self.timespan is 'monthly':
@@ -375,9 +366,7 @@ class letsplot():
             self.month_data = datetime.date.strftime(self.time_plot, '%m')
             self.year_data = datetime.date.strftime(self.time_plot, '%Y')
             fastname = '/home/pi/data/monthlyplot/' + self.year_data + '-' +  self.month_data + '*.hdf5'
-            # print(fastname)
             self.glob_data_ = glob.glob(fastname)
-            # print(self.glob_data_)
             self.name_data = '/home/pi/data/monthlyplot/' + datetime.date.strftime(self.time_plot, 'plot_%Y-%m.hdf5')
             self.name_dataparse = '/home/pi/data/monthlyplot/' + datetime.date.strftime(self.time_plot, 'plot_%Y-%m.pdf')
             self.plotit(self.name_dataparse)
@@ -385,20 +374,16 @@ class letsplot():
         if self.timespan is 'yearly':
             self.glob_data_ = None
             self.year_data = datetime.date.strftime(self.time_plot, '%Y')
-            # print(self.year_data)
             fastname = '/home/pi/data/yearlyplot/' + self.year_data + '*.hdf5'
             self.glob_data_ = glob.glob(fastname)
-            # print(self.glob_data_)
             self.name_data = '/home/pi/data/yearlyplot/' + datetime.date.strftime(self.time_plot, 'plot_%Y.hdf5')
             self.name_dataparse = '/home/pi/data/yearlyplot/' + datetime.date.strftime(self.time_plot, 'plot_%Y.pdf')
-            # print('working yearly')
             self.plotit(self.name_dataparse)
 
     def plotit(self, fname_plot):
         for o in self.glob_data_:
             print('working on glob')
             with h5py.File(o, 'a') as k:
-                # print('....')
                 self.num_timestamp = len(k['dailydata/temperature_C'])
                 self.datset1a = k.get('dailydata/temperature_C')
                 self.allvals1a = np.array(self.datset1a)
@@ -413,9 +398,9 @@ class letsplot():
 
                 self.npstrx1a = np.array(self.x1a, dtype='U25')
             for a in range(len(self.x1a)):
-                print(self.npx1a[a])
+                # print(self.npx1a[a])
                 self.npstrx1a[a] = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime(self.npx1a[a]))
-                print(self.npstrx1a)
+                # print(self.npstrx1a)
 
             fig = plt.figure(figsize = (8,8)) #Sets figure size in inches
             ax = fig.add_subplot(2, 1, 1)
@@ -466,7 +451,9 @@ while True:
     try:
         datars = getdata()
         temptemp, temphumidy = datars.doit() #get time and the temp/umhidity data
+        print('temp reading is')
         print(temptemp)
+        print('humidity reading is')
         print(temphumidy)
         timestamp_ = datars.stringtime()  # recall temp/humidity data
         filedate = datars.dates()  # process epoch for date

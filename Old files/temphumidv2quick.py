@@ -67,21 +67,23 @@ class getdata():  # get required data in 1 call
 
     def date_recall(self):
         try:
-            # os.path.isfile('textsave.txt')
+            os.path.isfile('textsave.txt')
             with open('textsave.txt', 'r') as time_read:
                 text = time_read.read()
                 recalldate = datetime.datetime.strptime(text, '%Y %m %d')
                 time_read.close()
-            print('sending recalldate')
+			print('sending recalldate')
             return recalldate
         except:
             with open('textsave.txt', 'w') as time_text:
                 checktime = datetime.datetime.now()
-                checktime_format = datetime.date.strftime(day_data1, '%Y %m %d')
+                checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
+                print('init of textsave')
                 print(checktime_format)
+                print('saving init')
                 time_text.write(checktime_format)
                 time_text.close()
-
+            return checktime
 # Function not part of the class but is called in the program immediately after
 # the above class
 def hd5file(fname, timestamp_s, hdftemp, hdfhumidy):
@@ -152,7 +154,7 @@ class countdown():
         print('Here we go...')
         while self.waittime() is True:
             print('true')
-            time.sleep(120)
+            time.sleep(2)
         print('it works')
 
 # quick method to print out the variables to see if things are working
@@ -475,7 +477,7 @@ while True:
         hd5file(filenamealpha, timestamp_, temptemp, temphumidy)
 
         waittime_ = countdown()
-        waittime_.timerthreadinit(3600, tickytock)
+        waittime_.timerthreadinit(10, tickytock)
         waittime_.timerthread.join()
         first_date = datars.date_recall()
         next_date = datars.dating()

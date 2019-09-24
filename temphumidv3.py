@@ -201,11 +201,11 @@ class storedata():
         if os.path.exists(self.daily):
             print('daily directory exists')
             if os.path.isfile(self.filedate_):
-                os.system('mv /home/pi/PIGPIO/*.hdf5 ' + self.daily_)
+                os.system('mv /home/pi/*.hdf5 ' + self.daily_)
         else:
             os.makedirs(self.daily)
             if os.path.isfile(self.filedate_):
-                os.system('mv /home/pi/PIGPIO/*.hdf5 ' + self.daily_)
+                os.system('mv /home/pi/*.hdf5 ' + self.daily_)
 
     def checkmake(self, epochs_):
         self.epoch_ = epochs_
@@ -402,19 +402,21 @@ class letsplot():
                 self.npstrx1a[a] = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime(self.npx1a[a]))
                 # print(self.npstrx1a)
 
-            fig = plt.figure(figsize = (8,8)) #Sets figure size in inches
+            fig = plt.figure(figsize=(8, 8))
+            # Sets figure size in inches
             ax = fig.add_subplot(2, 1, 1)
-            ax.plot(self.npstrx1a,self.y1a, color = [0, 0, 0]) #Plots vectors x vs y; they must have the same dimension. I also put in a color argument (rgb).
+            ax.plot(self.npstrx1a, self.y1a, color=[0, 0, 0])
+            # Plots vectors x vs y; they must have the same dimension. I also put in a color argument (rgb).
 
-            #Here we will set the x and y limits
+            # Here we will set the x and y limits
             # ax.set_xlim([0, 1])
             # ax.set_ylim([0, 1])
 
-            #Here we set x and y labels as strings, they can be whatever you want them to be
+            # Here we set x and y labels as strings, they can be whatever you want them to be
             # ax.set_xlabel('Time')
             # ax.set_ylabel('Temp oC')
 
-            #Here we eliminate the top and righthand parts of the box enclosing the figure
+            # Here we eliminate the top and righthand parts of the box enclosing the figure
             ax.spines['right'].set_visible(False)
             ax.spines['top'].set_visible(False)
             ax.yaxis.set_ticks_position('left')
@@ -482,8 +484,8 @@ while True:
             dailystore = storedata()
             dailystore.movedaily()
             dailystore.checkmake('daily')
-            gatherit = amassdata()
-            gatherit.joina('daily')
+            # gatherit = amassdata()
+            # gatherit.joina('daily')
             plotprep_ = letsplot()
             plotprep_.plotprep('daily')
             if week_data2 > week_data1:

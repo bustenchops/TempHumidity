@@ -19,14 +19,14 @@ class getdata():  # get required data in 1 call
         print('trigger1')
         #time.sleep(2)
         self.sampledata.trigger()
-        time.sleep(2)
-        print('trigger2 2s later')
+        time.sleep(5)
+        print('trigger2 5s later')
         self.sampledata.trigger()
         self.current = time.time()
         self.tempdata = '{:3.2f}'.format(self.sampledata.temperature() / 1.)
         self.humidata = '{:3.2f}'.format(self.sampledata.humidity() /1.)
-        # self.sampledata.cancel()
-        # self.pi.stop()
+        self.sampledata.cancel()
+        self.pi.stop()
 
     def doit(self):
         ttt = float(self.tempdata)

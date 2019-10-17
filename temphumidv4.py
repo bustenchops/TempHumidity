@@ -174,7 +174,7 @@ class storedata():
     # core from datastorev2
 
     def __init__(self):
-        self.delta = datetime.timedelta(days=1)
+        # self.delta = datetime.timedelta(days=1)
         self.dest = '/home/pi/data/'
         self.daily = self.dest + 'daily'
         self.daily_ = self.dest + 'daily/'
@@ -198,14 +198,31 @@ class storedata():
         self.filedate_ = self.filedate + ".hdf5"
 
     def movedaily(self):
+        fileglob = glob.glob('*.hdf5')
         if os.path.exists(self.daily):
             print('daily directory exists')
-            if os.path.isfile(self.filedate_):
-                os.system('mv /home/pi/*.hdf5 ' + self.daily_)
+            todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
+            todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
+            for i in fileglob:
+                names, ext = os.path.splitext(i)
+                namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d')
+                if namedateobj < todaytime:
+                    # print(todaytime)
+                    # print("good")
+                    # print(i)
+                    os.system('mv /home/pi/' + i + ' /home/pi/data/daily/')
+            # if os.path.isfile(self.filedate_):
+            #     os.system('mv /home/pi/*.hdf5 ' + self.daily_)
         else:
             os.makedirs(self.daily)
-            if os.path.isfile(self.filedate_):
-                os.system('mv /home/pi/*.hdf5 ' + self.daily_)
+            for i in fileglob:
+                names, ext = os.path.splitext(i)
+                namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d')
+                if namedateobj < todaytime:
+                    # print(todaytime)
+                    # print("good")
+                    # print(i)
+                    os.system('mv /home/pi/' + i + ' /home/pi/data/daily/')
 
     def checkmake(self, epochs_):
         self.epoch_ = epochs_

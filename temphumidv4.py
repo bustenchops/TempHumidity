@@ -174,7 +174,7 @@ class storedata():
     # core from datastorev2
 
     def __init__(self):
-        self.delta = datetime.timedelta(days=1)
+        self.delta = datetime.timedelta(days=4)
         self.dest = '/home/pi/data/'
         self.daily = self.dest + 'daily'
         self.daily_ = self.dest + 'daily/'
@@ -271,7 +271,7 @@ class storedata():
 class amassdata():
 
     def __init__(self):
-        self.delta_j = datetime.timedelta(days=1)
+        self.delta_j = datetime.timedelta(days=4)
         self.time_j = datetime.datetime.now() - self.delta_j
 
     def joina(self, settype):

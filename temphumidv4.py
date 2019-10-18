@@ -174,7 +174,7 @@ class storedata():
     # core from datastorev2
 
     def __init__(self):
-        # self.delta = datetime.timedelta(days=1)
+        self.delta = datetime.timedelta(days=1)
         self.dest = '/home/pi/data/'
         self.daily = self.dest + 'daily'
         self.daily_ = self.dest + 'daily/'
@@ -184,7 +184,7 @@ class storedata():
         self.weeklyplot_ = self.dest + 'weeklyplot/'
         self.monthlyplot = self.dest + 'monthlyplot'
         self.monthlyplot_ = self.dest + 'monthlyplot/'
-        # self.yearlyplot = self.dest + 'yearlyplot'
+        self.yearlyplot = self.dest + 'yearlyplot'
         self.yearlyplot_ = self.dest + 'yearlyplot/'
         self.time_ = datetime.datetime.now() - self.delta
         print(self.time_)
@@ -205,7 +205,7 @@ class storedata():
             todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
             for i in fileglob:
                 names, ext = os.path.splitext(i)
-                namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d')
+                namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
                 if namedateobj < todaytime:
                     # print(todaytime)
                     # print("good")
@@ -217,7 +217,7 @@ class storedata():
             os.makedirs(self.daily)
             for i in fileglob:
                 names, ext = os.path.splitext(i)
-                namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d')
+                namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
                 if namedateobj < todaytime:
                     # print(todaytime)
                     # print("good")

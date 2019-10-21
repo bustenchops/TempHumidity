@@ -440,7 +440,7 @@ class letsplot():
             ax.xaxis.set_ticks_position('bottom')
 
             ax = fig.add_subplot(2, 1, 2)
-            ax.plot(self.npstrx1a,self.y1a, color = [0, 0, 0]) #Plots vectors x vs y; they must have the same dimension. I also put in a color argument (rgb).
+            ax.plot(self.npstrx1a,self.y2a, color = [0, 0, 0]) #Plots vectors x vs y; they must have the same dimension. I also put in a color argument (rgb).
 
             #Here we will set the x and y limits
             # ax.set_xlim([0, 1])

@@ -155,7 +155,7 @@ class countdown():
         print('Starting...')
         while self.waittime() is True:
             print('waiting for timer')
-            time.sleep(120)
+            time.sleep(5)
         print('DING FRIES ARE DONE')
 
 # quick method to print out the variables to see if things are working

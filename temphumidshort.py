@@ -494,6 +494,12 @@ while True:
         next_date = datars.dating()
         print("next date")
         print(next_date)
+        if next_date > first_date:
+            print("date good")
+        subdate = datetime.timedelta(hours=24)
+        really = next_date - subdate
+        if next_date > really:
+            print("date good v2")
         # puts up current date
 
 

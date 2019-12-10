@@ -7,6 +7,48 @@ import matplotlib.pyplot as plt
 import glob
 
 
+class rangeuserinput():
+
+    def __init__(self):
+        self.periodinput = None
+        self.yearinput = None
+        self.monthone = None
+        self.monthtwo = None
+
+    def definedtime(self):
+        print('Indicate the period you what to process:')
+        self.periodinput = input('(y) = year , (m2m) = multiple months, (m) = single month ')
+        return (self.periodinput)
+
+    def defineyear(self):
+        print('Year selected')
+        self.yearinput = input('What year?')
+        print('Entered ' + self.yearinput)
+        if self.periodinput == 'y':
+            pass
+
+    def definemonths(self):
+        if self.periodinput == 'm2m':
+            print('Multiple months selected in year ' + self.yearinput)
+            self.monthone = input('Starting month (numerical format)?')
+            self.monthtwo = input('Ending month (inclusive, numberical format)?')
+            print('Entered ' + self.monthone + ' to ' + self.monthtwo + ' inlcusive')
+
+        if self.periodinput == 'm':
+            print('Single month selected in year ' + self.yearinput)
+            print('Month selected')
+            self.monthone = input('Which month (numerical format)?')
+            print('Entered ' + self.monthone)
+
+        return(self.monthone , self.monthtwo)
+
+gotime = rangeuserinput()
+gotime.definedtime()
+gotime.defineyear()
+gotime.definemonths()
+
+
+
 class storedata():
 
     def __init__(self):
@@ -123,7 +165,7 @@ class amassdata():
 
         if self.timepan == 'monthly':
 # self.year_j = datetime.date.strftime(self.time_j, '%Y')
-# self.month_j = datetime.date.strftime(self.time_j, '%m')
+self.month_j = datetime.date.strftime(self.time_j, '%m')
             quickname_m = self.dest_j + self.year_j + '-' + self.month_j + '*.hdf5'
             self.name_j = datetime.date.strftime(self.time_j, '%Y-%m_data.hdf5')
             self.filename_ = self.monthlyplot_j + self.name_j

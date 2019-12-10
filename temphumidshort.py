@@ -235,7 +235,6 @@ while True:
         if overday > first_date:
             dailystore = storedata()
             dailystore.movedaily()
-            dailystore.checkmake('daily')
             os.system('rclone copy /home/pi/data Gdrive:/data')
             datars.save_date()
 

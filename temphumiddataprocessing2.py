@@ -14,14 +14,15 @@ class rangeuserinput():
         self.yearinput = None
         self.monthone = None
         self.monthtwo = None
+        self.dayrange = None
+        self.tickrange = None
 
     def definedtime(self):
         print('Indicate the period you what to process:')
-        self.periodinput = input('(y) = year , (m) = sinlge or multiple months')
+        self.periodinput = input('(y) = year , (m) = sinlge or multiple months, (d) = span of days')
         return (self.periodinput)
 
     def defineyear(self):
-        print('Year or multiple months selected')
         self.yearinput = input('What year?')
         print('Entered ' + self.yearinput)
         return(self.yearinput)
@@ -33,14 +34,23 @@ class rangeuserinput():
             self.monthtwo = input('How many months to report?')
             print('Reporting from month ' + self.monthone + ' spanning ' + self.monthtwo + ' months')
 
-        # if self.periodinput == 'm':
-        #     print('Single month selected in year ' + self.yearinput)
-        #     print('Month selected')
-        #     self.monthone = input('Which month (numerical format)?')
-        #     self.monthtwo = 13
-        #     print('Entered ' + self.monthone)
+        if self.periodinput == 'd':
+             print('Day range selected in year ' + self.yearinput)
+             self.monthone = input('Which month (numerical format)?')
+             self.monthtwo = input('What day to start at?')
+             print('Starting at month ' + self.monthone + ' day ' + self.monthtwo)
 
         return(self.monthone, self.monthtwo)
+
+    def definedayrange(self):
+        self.dayrange = input('How many days to span?')
+
+        return(self.dayrange)
+
+    def tickrangeinput(self):
+        self.tickrange = input('Time between tick labels (in hours)?')
+
+        return (self.tickrange)
 
 class findandplot():
 
@@ -65,9 +75,7 @@ class findandplot():
         self.extramonth = int(lastmonth)
         self.multiarray = []
         self.multidateone = self.yearinput  + ' ' + firstmonth
-        # self.multidatetwo = self.yearinput  + ' ' + lastmonth
         self.startm = datetime.datetime.strptime(self.multidateone, '%Y %m')
-        # self.endm = datetime.datetime.strptime(self.multidatetwo, '%Y %m')
         self.delta_min = datetime.timedelta(seconds=1)
         self.startmonth = self.startm - self.delta_min
         self.endmonth = self.startm + relativedelta(months =+ self.extramonth)
@@ -83,24 +91,25 @@ class findandplot():
         print(self.multidateone)
         print(self.multiarray)
 
-    # def monofileset(self, onlymonth):
-    #     self.multidateone = self.yearinput  + ' ' + onlymonth
-    #     self.startm = datetime.datetime.strptime(self.multidateone, '%Y %m')
-    #     self.endm = datetime.datetime.strptime(self.multidateone, '%Y %m')
-    #     self.delta_min = datetime.timedelta(seconds=1)
-    #     self.startmonth = self.startm - self.delta_min
-    #     self.endmonth = self.endm + relativedelta(months=+1)
-    #     print(self.startmonth)
-    #     print(self.endmonth)
-    #     for hdf5file in self.yeararray:
-    #         head, tail = os.path.split(hdf5file)
-    #         names, ext = os.path.splitext(tail)
-    #         namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
-    #         if namedateobj > self.startmonth and namedateobj < self.endmonth:
-    #             self.multiarray.append(tail)
-    #             self.multiarray.sort()
-    #     print(self.multidateone)
-    #     print(self.multiarray)
+    def dayset(self, monthin, dayin, spanin):
+        self.extraday = int(spanin)
+        self.multiarray = []
+        self.multidateone = self.yearinput  + ' ' + monthin + ' ' + dayin
+        self.startm = datetime.datetime.strptime(self.multidateone, '%Y %m %d')
+        self.delta_min = datetime.timedelta(seconds=1)
+        self.startday = self.startm - self.delta_min
+        self.endday = self.startm + relativedelta(days =+ self.extraday)
+        print(self.startday)
+        print(self.endday)
+        for hdf5file in self.yeararray:
+            head, tail = os.path.split(hdf5file)
+            names, ext = os.path.splitext(tail)
+            namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
+            if namedateobj > self.startday and namedateobj < self.endday:
+                self.multiarray.append(tail)
+                self.multiarray.sort()
+        print(self.multidateone)
+        print(self.multiarray)
 
     def assimilate(self, namefile):
         locationone_ = '/home/pi/data/' + namefile
@@ -143,7 +152,8 @@ class findandplot():
                 print('file done')
         print('D-U-N....Done')
 
-    def dotheplot(self, namefile_, nameplot):
+    def dotheplot(self, namefile_, nameplot, rangeoftick):
+        rangeofint = int(rangeoftick)
         location_f = '/home/pi/data/' + namefile_
         location_p = '/home/pi/data/' + nameplot
         with h5py.File(location_f, 'a') as k:
@@ -176,7 +186,7 @@ class findandplot():
         ax.xaxis.set_tick_params(rotation=90)
 
         tempaxis1 = ax.xaxis.get_ticklabels()
-        tempaxis1 = list(set(tempaxis1) - set(tempaxis1[::48]))
+        tempaxis1 = list(set(tempaxis1) - set(tempaxis1[::rangeofint]))
         for label in tempaxis1:
             label.set_visible(False)
 
@@ -193,7 +203,7 @@ class findandplot():
         bx.xaxis.set_tick_params(rotation=90)
 
         tempaxis2 = bx.xaxis.get_ticklabels()
-        tempaxis2 = list(set(tempaxis2) - set(tempaxis2[::48]))
+        tempaxis2 = list(set(tempaxis2) - set(tempaxis2[::rangeofint]))
         for label in tempaxis2:
             label.set_visible(False)
         plt.show()
@@ -204,29 +214,33 @@ rangereturn = gotime.definedtime()
 yearreturn = gotime.defineyear()
 
 if rangereturn == 'y':
+    tickrange_ = gotime.tickrangeinput()
     yearfiles = findandplot()
     yearfiles.yearfileset(yearreturn)
     nameyf = yearreturn + '_data.hdf5'
     nameyp = yearreturn + '_plot.pdf'
     yearfiles.assimilate(nameyf)
-    yearfiles.dotheplot(nameyf, nameyp)
+    yearfiles.dotheplot(nameyf, nameyp, tickrange_)
 
 if rangereturn == 'm':
     monthonereturn, monthtworeturn = gotime.definemonths()
+    tickrange_ = gotime.tickrangeinput()
     yearfiles = findandplot()
     yearfiles.yearfileset(yearreturn)
     yearfiles.multifileset(monthonereturn, monthtworeturn)
     nameyf = yearreturn + "_starting at_" + monthonereturn + "_spanning_" + monthtworeturn + "_months_data.hdf5"
     nameyp = yearreturn + "_starting at_" + monthonereturn + "_spanning_" + monthtworeturn + "_months_plot.pdf"
     yearfiles.assimilate(nameyf)
-    yearfiles.dotheplot(nameyf, nameyp)
+    yearfiles.dotheplot(nameyf, nameyp, tickrange_)
 
-# if rangereturn == 'm':
-#     monthonereturn, monthtworeturn = gotime.definemonths()
-#     yearfiles = findandplot()
-#     yearfiles.yearfileset(yearreturn)
-#     yearfiles.monofileset(monthonereturn)
-#     nameyf = yearreturn + "-" + monthonereturn +  "_data.hdf5"
-#     nameyp = yearreturn + "-" + monthonereturn +  "_plot.pdf"
-#     yearfiles.assimilate(nameyf)
-#     yearfiles.dotheplot(nameyf, nameyp)
+if rangereturn == 'd':
+    monthonereturn, monthtworeturn = gotime.definemonths()
+    spanningtime = gotime.definedayrange()
+    tickrange_ = gotime.tickrangeinput()
+    yearfiles = findandplot()
+    yearfiles.yearfileset(yearreturn)
+    yearfiles.dayset(monthonereturn, monthtworeturn, spanningtime)
+    nameyf = yearreturn + "_starting at_" + monthonereturn + "_" + monthtworeturn  + "_spanning_" + spanningtime + "_days_data.hdf5"
+    nameyp = yearreturn + "_starting at_" + monthonereturn + "_" + monthtworeturn  + "_spanning_" + spanningtime + "_days_data.pdf"
+    yearfiles.assimilate(nameyf)
+    yearfiles.dotheplot(nameyf, nameyp, tickrange_)

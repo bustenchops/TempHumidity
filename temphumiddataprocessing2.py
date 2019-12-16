@@ -172,7 +172,7 @@ class findandplot():
             self.nptime2[a] = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime(self.nptime[a]))
 
         # Sets figure size in inches
-        fig = plt.figure(figsize=(24, 24))
+        fig = plt.figure(figsize=(24, 28))
 
         ax = fig.add_subplot(2, 1, 1)
         ax.scatter(self.nptime2, self.ytemp, s=3, color=[0,0,0])
@@ -183,7 +183,7 @@ class findandplot():
         ax.spines['top'].set_visible(False)
         ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks_position('bottom')
-        ax.xaxis.set_tick_params(rotation=90)
+        ax.xaxis.set_tick_params(rotation=45)
 
         tempaxis1 = ax.xaxis.get_ticklabels()
         tempaxis1 = list(set(tempaxis1) - set(tempaxis1[::rangeofint]))
@@ -191,7 +191,7 @@ class findandplot():
             label.set_visible(False)
 
         bx = fig.add_subplot(2, 1, 2)
-        bx.scatter(self.nptime2, self.yhumid, s=2)
+        bx.scatter(self.nptime2, self.yhumid, s=3)
         #Here we set x and y labels as strings, they can be whatever you want them to be
         bx.set_xlabel('Time')
         bx.set_ylabel('% Humidity')
@@ -200,7 +200,7 @@ class findandplot():
         bx.spines['top'].set_visible(False)
         bx.yaxis.set_ticks_position('left')
         bx.xaxis.set_ticks_position('bottom')
-        bx.xaxis.set_tick_params(rotation=90)
+        bx.xaxis.set_tick_params(rotation=45)
 
         tempaxis2 = bx.xaxis.get_ticklabels()
         tempaxis2 = list(set(tempaxis2) - set(tempaxis2[::rangeofint]))

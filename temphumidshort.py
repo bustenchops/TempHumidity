@@ -4,7 +4,6 @@ import os
 import h5py
 import threading
 import numpy as np
-import matplotlib.pyplot as plt
 import glob
 import pigpio
 import DHT22
@@ -44,7 +43,7 @@ class getdata():  # get required data in 1 call
         print(goodtimestring)
         return goodtimestring
 
-# parse out the date form the data and return it to be used in the hd5 file
+# parse out the date from the data and return it to be used in the hd5 file
     def dates(self):
         currentdate = time.strftime("%Y-%m-%d-week_%U", time.localtime(self.current))
         return str(currentdate)
@@ -196,7 +195,7 @@ class storedata():
                 if namedateobj < todaytime:
                     os.system('mv /home/pi/' + i + ' /home/pi/data/daily/')
 
-# #################___PROGRAM__################################3_
+# #################___PROGRAM___################################
 
 while True:
     try:

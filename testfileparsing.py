@@ -12,18 +12,18 @@ filename = './home/weatherstats_ottawa_hourly.csv'
 
 class hdf5():
 
-    def hd5file(self, fname, timestamp_s, hdftemp, hdfhumidy):
+    def climatehdf5(self, climate_name, climate_time, climate_temp, climate_humid, clmiate_baro):
         try:
             # checks to see if the file already exist - if the file exists open it and determine the size of the range.
-            os.path.isfile(fname)
+            os.path.isfile(cliamte_name)
             print('opening file')
-            aft = os.path.isfile(fname)
+            lookforfile = os.path.isfile(climate_name)
             print('if HD5F file present')
-            print(aft)
-            with h5py.File(fname, 'a') as f:
+            print(lookforfile)
+            with h5py.File(climate_name, 'a') as f:
                 # temptemp = 100
                 # temphumidy = 100
-                num_timestamp = len(f['dailydata/temperature_C'])
+                num_timestamp = len(f['dailydata/climate_temperature'])
                 print('size of the HD5F array')
                 print(num_timestamp)
                 f['dailydata/temperature_C'].resize((f['dailydata/temperature_C'].shape[0] + 1, f['dailydata/temperature_C'].shape[1]))

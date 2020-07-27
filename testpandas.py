@@ -19,7 +19,7 @@ class hdf5():
         self.last_olddata = None
         self.data_stamp = None
 
-    def climatehdf5(self, climate_name, climate_time, climate_temp, climate_humid, climate_baro):
+    def climateupdatehdf5(self, climate_name, climate_time, climate_temp, climate_humid, climate_baro):
         try:
             # checks to see if the file already exist - if the file exists open it and determine the size of the range.
             os.path.isfile(climate_name)
@@ -28,35 +28,34 @@ class hdf5():
             print('if HD5F file present')
             print(lookforfile)
             with h5py.File(climate_name, 'a') as f:
-                self.length_olddata = len(f['dailydata/climate_data'])
+                self.length_olddata = len(f['compiled_data'])
                 print('size of the climate HD5F array')
                 print(self.length_olddata)
-                self.last_olddata = f[] # stopped here....get the recent data from the climate update and compare to the oldest in file needs to be 3100<>4100 and then can add otherwise tell to get a better list. also needs to scrollthrough
+                self.length_olddata -= 1
+                self.last_olddata = f['compiled_data'] # stopped here....get the recent data from the climate update and compare to the oldest in file needs to be 3100<>4100 and then can add otherwise tell to get a better list. also needs to scrollthrough
 
 
 
 
 
-                f['dailydata/climate_data'].resize(
-                    (f['dailydata/climate_data'].shape[0] + 1, f['dailydata/climate_data'].shape[1]))
-                f['dailydata/climate_data'][loc_timestamp, 0] = climate_time
-                f['dailydata/climate_data'][loc_timestamp, 1] = climate_temp
-                f['dailydata/climate_data'][loc_timestamp, 2] = climate_humid
-                f['dailydata/climate_data'][loc_timestamp, 3] = climate_baro
+                f['compiled_data'].resize((f['compiled_data'].shape[0] + 1, f['compiled_data'].shape[1]))
+                f['compiled_data'][loc_timestamp, 0] = climate_time
+                f['compiled_data'][loc_timestamp, 1] = climate_temp
+                f['compiled_data'][loc_timestamp, 2] = climate_humid
+                f['compiled_data'][loc_timestamp, 3] = climate_baro
                 print('closing file')
                 f.close()
         except IOError:
             print('making file')
             # if the file does not exist - create it and set up
             with h5py.File(climate_name, 'a') as u:
-                climate_data = u.create_group('dailydata')
-                dt = np.dtype('i4')
-                self.data_stamp = dataforday.create_dataset('climate_data', shape=(1, 4), maxshape=(None, 4), dtype=dt)
+                data_type = np.dtype('i4')
+                self.data_stamp = u.create_dataset('compiled_data', shape=(1, 4), maxshape=(None, 4), dtype=data_type)
                 self.data_stamp[0, 0] = loc_timestamp
                 self.data_stamp[0, 1] = climate_temp
                 self.data_stamp[0, 2] = climate_humid
                 self.data_stamp[0, 3] = climate_baro
-                self.length_olddata = len(u['dailydata/climate_temperature'])
+                self.length_olddata = len(u['compiled_data'])
                 print(self.length_olddata)
                 print('closing file after create')
                 u.close()
@@ -71,6 +70,7 @@ class climatefile():
         self.climatedataupdate = None
         self.climateupdate_size = None
         self.filenameloc = None
+        self.callDHF5 = None
 
     def updateclimate(self):
         print('download climate hourly file from: https://ottawa.weatherstats.ca/download.html to /home/climatedata')

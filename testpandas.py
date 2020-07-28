@@ -23,6 +23,7 @@ class climatefile():
         self.inputone = None
         self.inputname = None
         self.inputconfirm = None
+        self.inputbackup = None
 
         self.climatedataupdate = None
         self.climateupdate_size = None
@@ -49,7 +50,8 @@ class climatefile():
 
     def initclimateupdate(self):
         print('download climate hourly file from: https://ottawa.weatherstats.ca/download.html to /home/climatedata/')
-        print('MAKE SURE THE FILE YOU WISH TO ADD HAS NEWER DATAPOINTS THAN THE LAST HDF5 ENTRY')
+        print('MAKE SURE THE FILE YOU WISH TO ADD OVERLAPS DATAPOINTS WITH THE HDF5 ENTRY')
+        self.inputbackup = input('Backup the original HDF5 file before continuing - press ENTER to continue')
         self.inputone = input('Is the file name weatherstats_ottawa_hourly.csv ? (y or n)')
         if self.inputone == 'n':
             self.inputfilename = input('What is the full name of the file?')

@@ -1,2 +1,0 @@
-This is new text for the 
- demo of writing in text file.

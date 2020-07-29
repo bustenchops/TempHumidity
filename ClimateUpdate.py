@@ -161,7 +161,7 @@ class climatefile():
                             f['compiled_data'].resize((f['compiled_data'].shape[0] + 1, f['compiled_data'].shape[1]))
                 f.close()
 
-beginprogram = input('1. Update climate records; 2. Compile HDF5 data')
+beginprogram = input('1. Update climate records; 2. Compile HDF5 data pre barometric reading; 3. Compile HDF5 data post barometric reading')
 if beginprogram == 1:
     print('master - init class')
     runupdate = climatefile()

@@ -8,10 +8,33 @@ import glob
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 
-class hdf5():
+class hdf5compile():
 
     def __init__(self):
-        pass
+        self.prebarodatafileloc = './home/climatedata/datafilesold/'
+        self.barodatafileloc = './home/climatedata/datafiles/'
+        self.h5pyclimatefile = './home/climatedata/climatedata.hdf5'
+        self.filelist = None
+
+    def complileprebaro(self):
+        #this is list comprehension
+        print('compiling list of pre-baro reading hdf5 files')
+        self.filelist = [file for file in glob.glob(self.prebarodatafileloc + '*.hdf5')]
+        print('sort files ascending')
+        self.filelist.sort()
+        print(self.filelist)
+
+
+
+
+        if os.path.isfile(self.h5pyclimatefile):
+            print('Opening HDF5 file')
+            with h5py.File(self.h5pyclimatefile, 'a') as a:
+                self.length_olddata = len(f['compiled_data'])
+                print('size of the climate HD5F array')
+                print(self.length_olddata)
+                print('closing file after size check')
+                f.close()
 
 class climatefile():
 
@@ -161,16 +184,20 @@ class climatefile():
                             f['compiled_data'].resize((f['compiled_data'].shape[0] + 1, f['compiled_data'].shape[1]))
                 f.close()
 
-print('master - init class')
-runupdate = climatefile()
-print('master - initclimateupdate')
-runupdate.initclimateupdate()
-print('master - climatehdf5size - get size and init if needed')
-runupdate.climatehdf5size()
-print('master - climateupdateserach - see if the update overlaps with the old')
-runupdate.climateupdatesearch()
-print('master - climateupdatecompile - get the data I need from the weather service into hdf5')
-runupdate.climateupdatecompile()
+beginprogram = input('1. Update climate records; 2. Compile HDF5 data pre barometric reading; 3. Compile HDF5 data post barometric reading')
+if beginprogram == 1:
+    print('master - init class')
+    runupdate = climatefile()
+    print('master - initclimateupdate')
+    runupdate.initclimateupdate()
+    print('master - climatehdf5size - get size and init if needed')
+    runupdate.climatehdf5size()
+    print('master - climateupdateserach - see if the update overlaps with the old')
+    runupdate.climateupdatesearch()
+    print('master - climateupdatecompile - get the data I need from the weather service into hdf5')
+    runupdate.climateupdatecompile()
+if beginprogram == 2:
+
 
 
 

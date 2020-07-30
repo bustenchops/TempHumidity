@@ -8,6 +8,16 @@ import glob
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 
+# LEGEND FOR HDF5FILE
+#0 unixtime for downloaded climate data
+#1 temp for downloaded climate data
+#2 humidity for downloaded climate data
+#3 baro for downloaded climate data
+#4 time from dataset
+#5 temp from dataset
+#6 humidity from dataset
+#7 baro from dataset
+
 class hdf5compile():
 
     def __init__(self):
@@ -15,6 +25,14 @@ class hdf5compile():
         self.barodatafileloc = './home/climatedata/datafiles/'
         self.h5pyclimatefile = './home/climatedata/climatedata.hdf5'
         self.filelist = None
+        self.climateunixdata = []
+        self.firsttimeentry = None
+        self.datasetoldtemp = None
+        self.datasetoldhumid = None
+        self.nearestvalue = None
+        self.timeentryindex = None
+        self.timeentryindex_temp = None
+        self.datasetoldtime = None
 
     def complileprebaro(self):
         #this is list comprehension
@@ -23,18 +41,34 @@ class hdf5compile():
         print('sort files ascending')
         self.filelist.sort()
         print(self.filelist)
-
-
-
-
-        if os.path.isfile(self.h5pyclimatefile):
-            print('Opening HDF5 file')
-            with h5py.File(self.h5pyclimatefile, 'a') as a:
-                self.length_olddata = len(f['compiled_data'])
-                print('size of the climate HD5F array')
-                print(self.length_olddata)
-                print('closing file after size check')
-                f.close()
+        with h5py.File(self.h5pyclimatefile, 'a') as f:
+            self.climateunixdata = f['compiled_data'][:, 0]
+            for dataset in self.filelist:
+                with h5py.File(dataset, 'a') as b:
+                    self.firsttimeentry = b['dailydata/temperature_C'][0,0]
+                    print('first time entry:')
+                    print(self.firsttimeentry)
+                    self.nearestvalue = self.climateunixdata[min(range(len(self.climateunixdata)), key = lambda i: abs(self.climateunixdata[i]-self.firsttimeentry))]
+                    print('nearest entry in climatedata:')
+                    print(self.nearestvalue)
+                    self.timeentryindex_temp = np.where(self.climateunixdata == self.nearestvalue)
+                    self.timeentryindex = self.timeentryindex_temp[0][0]
+                    print('nearest entry index location:')
+                    print(self.timeentryindex)
+                    for datapoints in range(len(b['dailydata/temperature_C'])):
+                        print('data entry:')
+                        print(datapoints)
+                        print('at:')
+                        print(self.timeentryindex)
+                        self.datasetoldtime = b['dailydata/temperature_C'][datapoints, 0]
+                        self.datasetoldtemp = b['dailydata/temperature_C'][datapoints,1]
+                        self.datasetoldhumid = b['dailydata/humidity'][datapoints,1]
+                        f['compiled_data'][self.timeentryindex, 4] = self.datasetoldtime
+                        f['compiled_data'][self.timeentryindex, 5] = self.datasetoldtemp
+                        f['compiled_data'][self.timeentryindex, 6] = self.datasetoldhumid
+                        self.timeentryindex += 1
+                    b.close()
+        f.close()
 
 class climatefile():
 
@@ -107,7 +141,7 @@ class climatefile():
             # if the file does not exist - create it and set up
             with h5py.File(self.savefile, 'a') as f:
                 data_type = np.dtype('i4')
-                self.climatehdf5entry = f.create_dataset('compiled_data', shape=(1, 7), maxshape=(None, 7), dtype=data_type)
+                self.climatehdf5entry = f.create_dataset('compiled_data', shape=(1, 7), maxshape=(None, 8), dtype=data_type)
                 self.length_olddata = len(f['compiled_data'])
                 print('size of the climate HD5F array')
                 print(self.length_olddata)
@@ -185,8 +219,8 @@ class climatefile():
                 f.close()
 
 beginprogram = input('1. Update climate records; 2. Compile HDF5 data pre barometric reading; 3. Compile HDF5 data post barometric reading')
-if beginprogram == 1:
-    print('master - init class')
+if beginprogram == '1':
+    print('1: init class')
     runupdate = climatefile()
     print('master - initclimateupdate')
     runupdate.initclimateupdate()
@@ -196,8 +230,11 @@ if beginprogram == 1:
     runupdate.climateupdatesearch()
     print('master - climateupdatecompile - get the data I need from the weather service into hdf5')
     runupdate.climateupdatecompile()
-if beginprogram == 2:
-
+if beginprogram == '2':
+    print('2: init class')
+    olddatacompile = hdf5compile()
+    print('compile old data')
+    olddatacompile.complileprebaro()
 
 
 

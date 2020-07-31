@@ -37,10 +37,24 @@ import pytz
 # currentdate = time.strftime("%Y-%m-%d-week_%U", time.localtime(timedata))
 # print(currentdate)
 
+
 checktime = datetime.datetime.now()
+deltatime = datetime.timedelta(seconds=3600)
+futuretime = checktime + deltatime
 print(checktime)
 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
 print('date from save_date')
 print(checktime_format)
 timestamp = datetime.datetime.timestamp(checktime)
 print(timestamp)
+if futuretime > checktime:
+    print('yes')
+
+def date_recall():
+    fart = datetime.datetime.now()
+    fart_1 = datetime.timedelta(seconds=1111)
+    fart_2 = fart + fart_1
+    return (fart_2)
+
+gotforit = date_recall()
+print(gotforit)

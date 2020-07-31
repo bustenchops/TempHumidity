@@ -15,7 +15,7 @@ address = 0x76
 bus = smbus2.SMBus(port)
 calibration_params = bme280.load_calibration_params(bus, address)
 
-# #################### make the hdf5 data and get the data ################
+
 class getdata():  # get required data in 1 call
     def __init__(self):
         self.sampledata = bme280.sample(bus, address, calibration_params)
@@ -23,7 +23,7 @@ class getdata():  # get required data in 1 call
         self.tempdata = self.sampledata.temperature
         self.humiddata = self.sampledata.humidity
         self.barodata = self.sampledata.pressure
-        self.current_time = time.time()
+
 
     def doit(self):
         temp_data = float(self.tempdata)
@@ -45,9 +45,13 @@ class getdata():  # get required data in 1 call
         return str(currentdate)
 
 # full epoch variable to be used by timer
-    def ticktock(self):
-        ticktock_ = self.current
-        return ticktock_
+    def currenttime(self):
+        data_time = self.timedata
+        interval_time = datetime.timedelta(seconds=3600)
+        target_time = data_time + interval_time
+        return (target_time)
+
+        return data_tick
 
     def dating(self):
         checktime = datetime.datetime.now()
@@ -100,16 +104,14 @@ def hd5file(fname, hdftime, hdftemp, hdfhumidy, hdfbaro):
             f['dailydata/temperature_C'][num_timestamp, 1] = hdftemp
             f['dailydata/humidity'][num_timestamp, 0] = hdftime
             f['dailydata/humidity'][num_timestamp, 1] = hdfhumidy
-            f['dailydata/humidity'][num_timestamp, 0] = hdftime
-            f['dailydata/humidity'][num_timestamp, 1] = hdfbaro
+            f['dailydata/pressure'][num_timestamp, 0] = hdftime
+            f['dailydata/pressure'][num_timestamp, 1] = hdfbaro
             print('closing file')
             f.close()
     except:
         print('making file')
 # if the file does not exist - create it and set up
         with h5py.File(fname, 'a') as u:
-            # temptemp = 99
-            # temphumidy = 99
             dataforday = u.create_group('dailydata')
             dt = np.dtype('i4')
             datatemp_stamp = dataforday.create_dataset('temperature_C', shape=(1, 2), maxshape=(None, 2), dtype=dt)
@@ -136,25 +138,25 @@ class countdown():
 
 # initializes and starts a thread for the timer accepting the datatimestampe and delay in seconds
 # calculates the end time
-    def timerthreadinit(self, secon, datatim_):
-        self.t_start = datatim_
-        self.t_delta = secon
-        self.t_countdown = self.t_start + self.t_delta
-        self.timerthread = threading.Thread(target=self.threadtimer, args=(self.t_delta, self.t_start))  # argument here is the time in minutes between samples (starting at midnight)
+    def timerthreadinit(self, target_time_1):
+        self.t_target = target_time_1
+        self.timerthread = threading.Thread(target=self.threadtimer)
         self.timerthread.start()
 
     def waittime(self):  # acquires the current time epoch and compares to the datatimestamp
-        if self.t_countdown > time.time():
+        timertime = datetime.datetime.now()
+        print('compare time to target')
+        if self.t_target > timertime:
             return True
-        elif self.t_countdown <= time.time():
+        elif self.t_target <= timertime:
             return False
 
 # while loop that repeatedly checks the wait time and sets the inter-interval check time
-    def threadtimer(self, delay_, datatim):
+    def threadtimer(self):
         print('Starting...')
         while self.waittime() is True:
             print('waiting for timer')
-            time.sleep(120)
+            time.sleep(1)
         print('DING FRIES ARE DONE')
 
 # quick method to print out the variables to see if things are working
@@ -173,12 +175,11 @@ class storedata():
     # core from datastorev2
 
     def __init__(self):
-        self.dest = '/home/pi/data/'
-        self.daily = self.dest + 'daily'
+        self.dest = './home/climatedata/datafiles/'
 
-    def movedaily(self):
+    def movedata(self):
         fileglob = glob.glob('*.hdf5')
-        if os.path.exists(self.daily):
+        if os.path.exists(self.dest):
             print('daily directory exists')
             todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
             todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
@@ -186,14 +187,14 @@ class storedata():
                 names, ext = os.path.splitext(i)
                 namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
                 if namedateobj < todaytime:
-                    os.system('mv /home/pi/' + i + ' /home/pi/data/daily/')
+                    os.system('mv ./home/pi/' + i + ' ' + self.dest)
         else:
-            os.makedirs(self.daily)
+            os.makedirs(self.dest)
             for i in fileglob:
                 names, ext = os.path.splitext(i)
                 namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
                 if namedateobj < todaytime:
-                    os.system('mv /home/pi/' + i + ' /home/pi/data/daily/')
+                    os.system('mv /home/pi/' + i + ' ' + self.dest)
 
 # #################___PROGRAM___################################
 
@@ -215,7 +216,6 @@ while True:
         print('time reading is')
         print(temptime)
 
-
         filedate = datars.dates()
         # returns the date for the file name
         print(filedate)
@@ -224,24 +224,24 @@ while True:
         # add extension to the date for filename
         print(filenamealpha)
 
-
-
         hd5file(filenamealpha, temptime, temptemp, temphumidy, tempbaro)
         # puts the data into HDF5 file
 
-        tickytock = datars.ticktock()
-        # return the current time for timerthread
+        time_interval = datars.currenttime()
+        # return the time data was acquired plus 3600 seconds for timerthread
 
         waittime_ = countdown()
-        waittime_.timerthreadinit(3600, tickytock)
+        waittime_.timerthreadinit(time_interval)
         # sets up the timer in a thread waits for set time from timestamp
         waittime_.timerthread.join()
         # waits for thread to finish
+
+
         first_date = datars.date_recall()
         print("first date")
         # recalls the date from the text file
         next_date = datars.dating()
-        subdate = datetime.timedelta(hours=26)
+        subdate = datetime.timedelta(hours=25)
         overday = next_date - subdate
 
         if overday > first_date:

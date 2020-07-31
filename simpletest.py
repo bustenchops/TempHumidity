@@ -41,20 +41,48 @@ import pytz
 checktime = datetime.datetime.now()
 deltatime = datetime.timedelta(seconds=3600)
 futuretime = checktime + deltatime
+print('checktime')
 print(checktime)
-checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
-print('date from save_date')
+checktime_format = datetime.datetime.strftime(checktime, '%Y-%m-%d')
+print('checktime_format')
 print(checktime_format)
 timestamp = datetime.datetime.timestamp(checktime)
 print(timestamp)
 if futuretime > checktime:
-    print('yes')
+    print('yes future is greater')
+checktime_format_manual = '2020-01-02'
+tttt = datetime.datetime.strptime(checktime_format_manual, '%Y-%m-%d')
+print('ttt trptime')
+print(tttt)
+
 
 def date_recall():
     fart = datetime.datetime.now()
-    fart_1 = datetime.timedelta(seconds=1111)
+    fart_1 = datetime.timedelta(days=1)
     fart_2 = fart + fart_1
     return (fart_2)
 
+
 gotforit = date_recall()
 print(gotforit)
+
+fart_4 = datetime.timedelta(days=1)
+timestamp_datetime = datetime.datetime.fromtimestamp(1596056400)
+for x in range(2):
+    print('more timey stuff')
+    qqqq = timestamp_datetime.strftime('%Y-%m-%d %H:%M:%S')
+    print(qqqq)
+    timestamp_datetime = timestamp_datetime + fart_4
+
+
+
+# aaa = input('yyyy-mm-dd')
+# bbb = input('yyyy-mm-dd')
+# aaa1 = datetime.datetime.strptime(aaa, '%Y-%m-%d')
+# print(aaa1)
+# bbb1 = datetime.datetime.strptime(bbb, '%Y-%m-%d')
+# print(bbb1)
+# ccc1 = bbb1 - aaa1
+# print(ccc1)
+# ddd1 = pd.Timedelta(ccc1)
+# print(ddd1.days)

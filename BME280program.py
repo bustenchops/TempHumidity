@@ -217,7 +217,7 @@ while True:
         print('time reading is')
         print(temptime)
 
-        filedate = datars.dates()
+        filedate = datars.string_current_date()
         # returns the date for the file name
         print(filedate)
 
@@ -247,7 +247,7 @@ while True:
 
         if overday > first_date:
             dailystore = storedata()
-            dailystore.movedaily()
+            dailystore.movedata()
             os.system('rclone copy ./home/pi/climatedata/datafiles Gdrive:/data')
             datars.save_date()
 

@@ -48,7 +48,7 @@ class getdata():  # get required data in 1 call
 # full epoch variable to be used by timer
     def timer_time(self):
         data_time = self.timedata
-        interval_time = datetime.timedelta(seconds=30)
+        interval_time = datetime.timedelta(seconds=10)
         target_time = data_time + interval_time
         return (target_time)
 
@@ -82,7 +82,7 @@ class getdata():  # get required data in 1 call
                 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
                 time_text.write(checktime_format)
                 time_text.close()
-            print('sending date from date_recal exception')
+            print('sending date from function: date_recall exception')
             return checktime
 # Function not part of the class but is called in the program immediately after
 # the above class
@@ -194,6 +194,7 @@ class storedata():
             for i in fileglob:
                 names, ext = os.path.splitext(i)
                 namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
+                todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
                 if namedateobj < todaytime:
                     os.system('mv /home/pi/' + i + ' ' + self.dest)
 

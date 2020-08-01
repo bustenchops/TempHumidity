@@ -176,7 +176,7 @@ class storedata():
     # core from datastorev2
 
     def __init__(self):
-        self.dest = './home/climatedata/datafiles/'
+        self.dest = './home/pi/climatedata/datafiles/'
 
     def movedata(self):
         fileglob = glob.glob('*.hdf5')
@@ -248,7 +248,7 @@ while True:
         if overday > first_date:
             dailystore = storedata()
             dailystore.movedaily()
-            os.system('rclone copy ./home/climatedata/datafiles Gdrive:/data')
+            os.system('rclone copy ./home/pi/climatedata/datafiles Gdrive:/data')
             datars.save_date()
 
     except (KeyboardInterrupt, SystemExit):

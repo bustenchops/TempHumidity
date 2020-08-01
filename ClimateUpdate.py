@@ -21,9 +21,9 @@ import pandas as pd
 class hdf5compile():
 
     def __init__(self):
-        self.prebarodatafileloc = './home/climatedata/datafilesold/'
-        self.barodatafileloc = './home/climatedata/datafiles/'
-        self.h5pyclimatefile = './home/climatedata/climatedata.hdf5'
+        self.prebarodatafileloc = './home/pi/climatedata/datafilesold/'
+        self.barodatafileloc = './home/pi/climatedata/datafiles/'
+        self.h5pyclimatefile = './home/pi/climatedata/climatedata.hdf5'
         self.filelist = None
         self.climateunixdata = []
         self.firsttimeentry = None
@@ -113,7 +113,7 @@ class climatefile():
     def __init__(self):
         self.inputfilename = 'weatherstats_ottawa_hourly.csv'
         self.h5pyclimate = 'climatedata.hdf5'
-        self.filenameloc = './home/climatedata/'
+        self.filenameloc = './home/pi/climatedata/'
 
         self.inputone = None
         self.inputname = None
@@ -145,7 +145,7 @@ class climatefile():
         self.searchrange = None
 
     def initclimateupdate(self):
-        print('download climate hourly file from: https://ottawa.weatherstats.ca/download.html to /home/climatedata/')
+        print('download climate hourly file from: https://ottawa.weatherstats.ca/download.html to /home/pi/climatedata/')
         print('MAKE SURE THE FILE YOU WISH TO ADD OVERLAPS DATAPOINTS WITH THE HDF5 ENTRY')
         self.inputbackup = input('Backup the original HDF5 file before continuing - press ENTER to continue')
         self.inputone = input('Is the file name weatherstats_ottawa_hourly.csv ? (y or n)')

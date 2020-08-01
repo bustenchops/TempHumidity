@@ -27,7 +27,7 @@ class findandplot():
 
     def __init__(self):
         self.startlocation = './home/pi/climatedata/'
-        self.file_name = './home/climatedata/climatedata.hdf5'
+        self.file_name = './home/pi/climatedata/climatedata.hdf5'
         self.day1 = None
         self.ending= None
         self.day1_formatted = None
@@ -92,7 +92,7 @@ class findandplot():
 
     def dotheplot(self, namefile_, rangeoftick):
         rangeofint = int(rangeoftick)
-        location_f = './home/climatedata/plots/' + namefile_
+        location_f = './home/pi/climatedata/plots/' + namefile_
 
         # Sets figure size in inches
         fig = plt.figure(figsize=(20, 60))
@@ -162,7 +162,7 @@ class findandplot():
 
     def dotheplot2(self, namefile_, namefile_b, namefile_c, rangeoftick):
         rangeofint = int(rangeoftick)
-        location_f = './home/climatedata/plots/' + namefile_
+        location_f = './home/pi/climatedata/plots/' + namefile_
 
         # Sets figure size in inches
         fig = plt.figure(figsize=(20, 60))
@@ -194,7 +194,7 @@ class findandplot():
         plt.show()
         fig.savefig(location_f, tight_layout = False)
 
-        location_f = './home/climatedata/plots/' + namefile_b
+        location_f = './home/pi/climatedata/plots/' + namefile_b
 
         # Sets figure size in inches
         fig = plt.figure(figsize=(20, 60))
@@ -225,7 +225,7 @@ class findandplot():
         plt.show()
         fig.savefig(location_f, tight_layout=False)
 
-        location_f = './home/climatedata/plots/' + namefile_c
+        location_f = './home/pi/climatedata/plots/' + namefile_c
 
         # Sets figure size in inches
         fig = plt.figure(figsize=(20, 60))

@@ -38,7 +38,7 @@ class hdf5compile():
     def complileprebaro(self):
         #this is list comprehension
         print('compiling list of pre-baro reading hdf5 files')
-        self.filelist = [file for file in glob.glob(self.barodatafileloc + '*.hdf5')]
+        self.filelist = [file for file in glob.glob(self.prebarodatafileloc + '*.hdf5')]
         print('sort files ascending')
         self.filelist.sort()
         print(self.filelist)
@@ -74,7 +74,7 @@ class hdf5compile():
     def complilepostbaro(self):
         #this is list comprehension
         print('compiling list of pre-baro reading hdf5 files')
-        self.filelist = [file for file in glob.glob(self.prebarodatafileloc + '*.hdf5')]
+        self.filelist = [file for file in glob.glob(self.barodatafileloc + '*.hdf5')]
         print('sort files ascending')
         self.filelist.sort()
         print(self.filelist)

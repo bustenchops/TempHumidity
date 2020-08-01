@@ -33,8 +33,45 @@ class hdf5compile():
         self.timeentryindex = None
         self.timeentryindex_temp = None
         self.datasetoldtime = None
+        self.datasetoldbaro = None
 
     def complileprebaro(self):
+        #this is list comprehension
+        print('compiling list of pre-baro reading hdf5 files')
+        self.filelist = [file for file in glob.glob(self.barodatafileloc + '*.hdf5')]
+        print('sort files ascending')
+        self.filelist.sort()
+        print(self.filelist)
+        with h5py.File(self.h5pyclimatefile, 'a') as f:
+            self.climateunixdata = f['compiled_data'][:, 0]
+            for dataset in self.filelist:
+                with h5py.File(dataset, 'a') as b:
+                    self.firsttimeentry = b['dailydata/temperature_C'][0,0]
+                    print('first time entry:')
+                    print(self.firsttimeentry)
+                    self.nearestvalue = self.climateunixdata[min(range(len(self.climateunixdata)), key = lambda i: abs(self.climateunixdata[i]-self.firsttimeentry))]
+                    print('nearest entry in climatedata:')
+                    print(self.nearestvalue)
+                    self.timeentryindex_temp = np.where(self.climateunixdata == self.nearestvalue)
+                    self.timeentryindex = self.timeentryindex_temp[0][0]
+                    print('nearest entry index location:')
+                    print(self.timeentryindex)
+                    for datapoints in range(len(b['dailydata/temperature_C'])):
+                        print('data entry:')
+                        print(datapoints)
+                        print('at:')
+                        print(self.timeentryindex)
+                        self.datasetoldtime = b['dailydata/temperature_C'][datapoints, 0]
+                        self.datasetoldtemp = b['dailydata/temperature_C'][datapoints,1]
+                        self.datasetoldhumid = b['dailydata/humidity'][datapoints,1]
+                        f['compiled_data'][self.timeentryindex, 4] = self.datasetoldtime
+                        f['compiled_data'][self.timeentryindex, 5] = self.datasetoldtemp
+                        f['compiled_data'][self.timeentryindex, 6] = self.datasetoldhumid
+                        self.timeentryindex += 1
+                    b.close()
+        f.close()
+
+    def complilepostbaro(self):
         #this is list comprehension
         print('compiling list of pre-baro reading hdf5 files')
         self.filelist = [file for file in glob.glob(self.prebarodatafileloc + '*.hdf5')]
@@ -66,6 +103,7 @@ class hdf5compile():
                         f['compiled_data'][self.timeentryindex, 4] = self.datasetoldtime
                         f['compiled_data'][self.timeentryindex, 5] = self.datasetoldtemp
                         f['compiled_data'][self.timeentryindex, 6] = self.datasetoldhumid
+                        f['compiled_data'][self.timeentryindex, 7] = self.datasetoldbaro
                         self.timeentryindex += 1
                     b.close()
         f.close()
@@ -239,6 +277,10 @@ if beginprogram == '2':
     olddatacompile = hdf5compile()
     print('compile old data')
     olddatacompile.complileprebaro()
-
+if beginprogram == '3':
+    print('2: init class')
+    olddatacompile = hdf5compile()
+    print('compile old data')
+    olddatacompile.complilepostbaro()
 
 

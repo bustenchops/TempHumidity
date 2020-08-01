@@ -46,9 +46,9 @@ class getdata():  # get required data in 1 call
         return str(currentdate)
 
 # full epoch variable to be used by timer
-    def currenttime(self):
+    def timer_time(self):
         data_time = self.timedata
-        interval_time = datetime.timedelta(seconds=3600)
+        interval_time = datetime.timedelta(seconds=30)
         target_time = data_time + interval_time
         return (target_time)
 
@@ -228,7 +228,7 @@ while True:
         hd5file(filenamealpha, temptime, temptemp, temphumidy, tempbaro)
         # puts the data into HDF5 file
 
-        time_interval = datars.currenttime()
+        time_interval = datars.timer_time()
         # return the time data was acquired plus 3600 seconds for timerthread
 
         waittime_ = countdown()

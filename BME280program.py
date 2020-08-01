@@ -22,12 +22,13 @@ class getdata():  # get required data in 1 call
         self.timedata = self.sampledata.timestamp
         self.tempdata = self.sampledata.temperature
         self.humiddata = self.sampledata.humidity
-        self.barodata = self.sampledata.pressure
-
+        self.barodata_init = self.sampledata.pressure
+        self.barodata = None
 
     def doit(self):
         temp_data = float(self.tempdata)
         humid_data = float(self.humiddata)
+        self.barodata = self.barodata_init / 10
         baro_data = float(self.barodata)
         return temp_data, humid_data, baro_data
 

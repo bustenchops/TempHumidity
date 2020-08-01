@@ -63,9 +63,9 @@ class hdf5compile():
                         self.datasetoldtime = b['dailydata/temperature_C'][datapoints, 0]
                         self.datasetoldtemp = b['dailydata/temperature_C'][datapoints,1]
                         self.datasetoldhumid = b['dailydata/humidity'][datapoints,1]
-                        f['compiled_data'][self.timeentryindex, 5] = self.datasetoldtime
-                        f['compiled_data'][self.timeentryindex, 6] = self.datasetoldtemp
-                        f['compiled_data'][self.timeentryindex, 7] = self.datasetoldhumid
+                        f['compiled_data'][self.timeentryindex, 4] = self.datasetoldtime
+                        f['compiled_data'][self.timeentryindex, 5] = self.datasetoldtemp
+                        f['compiled_data'][self.timeentryindex, 6] = self.datasetoldhumid
                         self.timeentryindex += 1
                     b.close()
         f.close()
@@ -209,9 +209,9 @@ class climatefile():
                         self.climate_baro = self.climatedataupdate.pressure_station[self.climateupdate_size]
                         self.climateupdate_size -= 1
                         f['compiled_data'][self.lastnum_olddata, 0] = self.climate_time
-                        f['compiled_data'][self.lastnum_olddata, 2] = self.climate_temp
-                        f['compiled_data'][self.lastnum_olddata, 3] = self.climate_humid
-                        f['compiled_data'][self.lastnum_olddata, 4] = self.climate_baro
+                        f['compiled_data'][self.lastnum_olddata, 1] = self.climate_temp
+                        f['compiled_data'][self.lastnum_olddata, 2] = self.climate_humid
+                        f['compiled_data'][self.lastnum_olddata, 3] = self.climate_baro
                         print('entering climate data location lastnum_olddata')
                         print(self.lastnum_olddata)
                         self.lastnum_olddata += 1

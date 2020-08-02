@@ -34,8 +34,6 @@ class getdata():  # get required data in 1 call
         self.humid_data = None
         self.temp_data = None
 
-        self.humidata = '{:3.2f}'.format(self.sampledata.humidity() / 1.)
-
     def doit(self):
         self.temp_data = '{:3.2f}'.format(self.tempdata / 1.)
         self.humid_data = '{:3.2f}'.format(self.humidata / 1.)

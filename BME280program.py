@@ -49,7 +49,7 @@ class getdata():  # get required data in 1 call
 # full epoch variable to be used by timer
     def timer_time(self):
         data_time = self.timedata
-        interval_time = datetime.timedelta(seconds=10)
+        interval_time = datetime.timedelta(seconds=3600)
         target_time = data_time + interval_time
         return (target_time)
 
@@ -259,7 +259,7 @@ while True:
         if overday > first_date:
             dailystore = storedata()
             dailystore.movedata()
-            os.system('rclone copy /home/pi/climatedata/datafiles Gdrive:/')
+            os.system('rclone copy /home/pi/climatedata/datafiles Gdrive:')
             datars.save_date()
 
     except (KeyboardInterrupt, SystemExit):

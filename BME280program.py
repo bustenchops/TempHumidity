@@ -177,25 +177,30 @@ class storedata():
 
     def __init__(self):
         self.dest = './home/pi/climatedata/datafiles/'
+        self.todaytemp = None
+        self.todaytime = None
+        self.names = None
+        self.ext = None
+        self.namedateobj = None
 
     def movedata(self):
         fileglob = glob.glob('*.hdf5')
         if os.path.exists(self.dest):
             print('daily directory exists')
-            todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
-            todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
+            self.todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
+            self.todaytime = datetime.datetime.strptime(self.todaytemp, "%Y-%m-%d")
             for i in fileglob:
-                names, ext = os.path.splitext(i)
-                namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
-                if namedateobj < todaytime:
+                self.names, self.ext = os.path.splitext(i)
+                self.namedateobj = datetime.datetime.strptime(self.names, '%Y-%m-%d-week_%U')
+                if self.namedateobj < self.todaytime:
                     os.system('mv ./home/pi/' + i + ' ' + self.dest)
         else:
             os.makedirs(self.dest)
             for i in fileglob:
-                names, ext = os.path.splitext(i)
-                namedateobj = datetime.datetime.strptime(names, '%Y-%m-%d-week_%U')
-                todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
-                if namedateobj < todaytime:
+                self.names, self.ext = os.path.splitext(i)
+                self.namedateobj = datetime.datetime.strptime(self.names, '%Y-%m-%d-week_%U')
+                self.todaytime = datetime.datetime.strptime(self.todaytemp, "%Y-%m-%d")
+                if self.namedateobj < self.todaytime:
                     os.system('mv /home/pi/' + i + ' ' + self.dest)
 
 # #################___PROGRAM___################################

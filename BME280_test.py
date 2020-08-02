@@ -34,12 +34,14 @@ class getdata():  # get required data in 1 call
         self.humid_data = None
         self.temp_data = None
 
+        self.humidata = '{:3.2f}'.format(self.sampledata.humidity() / 1.)
+
     def doit(self):
-        self.temp_data = float(self.tempdata)
-        self.humid_data = float(self.humiddata)
-        self.barodata = self.barodata_init / 10
+        self.temp_data = '{:3.2f}'.format(self.tempdata / 1.)
+        self.humid_data = '{:3.2f}'.format(self.humidata / 1.)
+        self.barodata = '{:3.2f}'.format(self.barodata_init / 10.)
         self.baro_data = float(self.barodata)
-        return self.temp_data, self.humid_data, self.baro_data
+        return self.temp_data, self.humid_data, self.barodata
 
 getting_data=getdata()
 temperature, humidity, barometer = getting_data.doit()

@@ -35,10 +35,10 @@ class getdata():  # get required data in 1 call
 
 
     def doit(self):
-        self.temp_data = format(self.tempdata, '.2f')
-        self.humid_data = format(self.humiddata, '.2f')
+        self.temp_data = format(self.tempdata, '.3f')
+        self.humid_data = format(self.humiddata, '.3f')
         self.barodata = self.barodata_init / 10
-        self.baro_data = format(self.barodata, '.2f')
+        self.baro_data = format(self.barodata, '.3f')
         return self.temp_data, self.humid_data, self.baro_data
 
 getting_data=getdata()

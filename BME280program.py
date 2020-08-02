@@ -28,13 +28,13 @@ class getdata():  # get required data in 1 call
         self.temp_data = None
 
     def doit(self):
-        self.temp_data = '{:5.3f}'.format(self.tempdata / 1.)
-        self.humid_data = '{:5.3f}'.format(self.humiddata / 1.)
-        self.barodata = '{:5.3f}'.format(self.barodata_init / 10.)
-        return self.temp_data, self.humid_data, self.barodata
+        self.temp_data = format(self.tempdata, '.3f')
+        self.humid_data = format(self.humiddata, '.3f')
+        self.barodata = self.barodata_init / 10
+        self.baro_data = format(self.barodata, '.3f')
+        return self.temp_data, self.humid_data, self.baro_data
 
-
-#takes timestamp from the BME280 code, converts to unixtime and puts it as an int
+    #takes timestamp from the BME280 code, converts to unixtime and puts it as an int
     def int_current_time(self):
         self.current_time = datetime.datetime.timestamp(self.timedata)
         time_data = int(self.current_time)

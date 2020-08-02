@@ -28,11 +28,10 @@ class getdata():  # get required data in 1 call
         self.temp_data = None
 
     def doit(self):
-        self.temp_data = format(self.tempdata, '.3f')
-        self.humid_data = format(self.humiddata, '.3f')
+        self.temp_data = self.tempdata
+        self.humid_data = self.humiddata
         self.barodata = self.barodata_init / 10
-        self.baro_data = format(self.barodata, '.3f')
-        return self.temp_data, self.humid_data, self.baro_data
+        return self.temp_data, self.humid_data, self.barodata
 
     #takes timestamp from the BME280 code, converts to unixtime and puts it as an int
     def int_current_time(self):
@@ -114,7 +113,7 @@ def hd5file(fname, hdftime, hdftemp, hdfhumidy, hdfbaro):
 # if the file does not exist - create it and set up
         with h5py.File(fname, 'a') as u:
             dataforday = u.create_group('dailydata')
-            dt = np.dtype('i4')
+            dt = np.dtype('float')
             datatemp_stamp = dataforday.create_dataset('temperature_C', shape=(1, 2), maxshape=(None, 2), dtype=dt)
             datahumid_stamp = dataforday.create_dataset('humidity', shape=(1, 2), maxshape=(None, 2), dtype=dt)
             databaro_stamp = dataforday.create_dataset('pressure', shape=(1, 2), maxshape=(None, 2), dtype=dt)

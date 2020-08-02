@@ -101,8 +101,21 @@ import pytz
 # timestamp = int(datetime.datetime.timestamp(day1_formatted))
 # print('unix format of day1 ', timestamp)
 
-todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
-todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
+# todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
+# todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
+#
+# print(todaytemp)
+# print(todaytime)
+testfile = 'test.hdf5'
+hdftime = 1571892942
+hdftemp = 24.5458889797
 
-print(todaytemp)
-print(todaytime)
+
+with h5py.File(testfile, 'a') as u:
+    dataforday = u.create_group('dailydata')
+    dt = np.dtype('float')
+    datatemp_stamp = dataforday.create_dataset('temperature_C', shape=(1, 2), maxshape=(None, 2), dtype=dt)
+    datatemp_stamp[0, 0] = hdftime
+    datatemp_stamp[0, 1] = hdftemp
+    print('closing file again')
+    u.close()

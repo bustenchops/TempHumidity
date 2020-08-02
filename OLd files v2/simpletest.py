@@ -66,16 +66,16 @@ import pytz
 # gotforit = date_recall()
 # print(gotforit)
 #
-fart_4 = datetime.timedelta(days=1)
-timestamp_datetime = datetime.datetime.fromtimestamp(1596056400)
-arr = []
-for x in range(5):
-    print('more timey stuff')
-    qqqq = timestamp_datetime.strftime('%Y-%m-%d_%Hh')
-    print(qqqq)
-    timestamp_datetime = timestamp_datetime + fart_4
-    arr.append(qqqq)
-print(arr)
+# fart_4 = datetime.timedelta(days=1)
+# timestamp_datetime = datetime.datetime.fromtimestamp(1596056400)
+# arr = []
+# for x in range(5):
+#     print('more timey stuff')
+#     qqqq = timestamp_datetime.strftime('%Y-%m-%d_%Hh')
+#     print(qqqq)
+#     timestamp_datetime = timestamp_datetime + fart_4
+#     arr.append(qqqq)
+# print(arr)
 
 
 # aaa = input('yyyy-mm-dd')
@@ -101,3 +101,8 @@ print(arr)
 # timestamp = int(datetime.datetime.timestamp(day1_formatted))
 # print('unix format of day1 ', timestamp)
 
+todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
+todaytime = datetime.datetime.strptime(todaytemp, "%Y-%m-%d")
+
+print(todaytemp)
+print(todaytime)

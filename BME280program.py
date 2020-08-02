@@ -193,7 +193,7 @@ class storedata():
                 self.names, self.ext = os.path.splitext(i)
                 self.namedateobj = datetime.datetime.strptime(self.names, '%Y-%m-%d-week_%U')
                 if self.namedateobj < self.todaytime:
-                    os.system('mv ./home/pi/' + i + ' ' + self.dest)
+                    os.system('mv ./home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
         else:
             os.makedirs(self.dest)
             for i in fileglob:
@@ -201,7 +201,7 @@ class storedata():
                 self.namedateobj = datetime.datetime.strptime(self.names, '%Y-%m-%d-week_%U')
                 self.todaytime = datetime.datetime.strptime(self.todaytemp, "%Y-%m-%d")
                 if self.namedateobj < self.todaytime:
-                    os.system('mv /home/pi/' + i + ' ' + self.dest)
+                    os.system('mv /home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
 
 # #################___PROGRAM___################################
 

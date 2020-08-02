@@ -100,7 +100,7 @@ def hd5file(fname, hdftime, hdftemp, hdfhumidy, hdfbaro):
             print(num_timestamp)
             f['dailydata/temperature_C'].resize((f['dailydata/temperature_C'].shape[0] + 1, f['dailydata/temperature_C'].shape[1]))
             f['dailydata/humidity'].resize((f['dailydata/humidity'].shape[0] + 1, f['dailydata/humidity'].shape[1]))
-            f['dailydata/presssure'].resize((f['dailydata/pressure'].shape[0] + 1, f['dailydata/pressure'].shape[1]))
+            f['dailydata/pressure'].resize((f['dailydata/pressure'].shape[0] + 1, f['dailydata/pressure'].shape[1]))
             f['dailydata/temperature_C'][num_timestamp, 0] = hdftime
             f['dailydata/temperature_C'][num_timestamp, 1] = hdftemp
             f['dailydata/humidity'][num_timestamp, 0] = hdftime

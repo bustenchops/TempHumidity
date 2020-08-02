@@ -114,7 +114,7 @@ def hd5file(fname, hdftime, hdftemp, hdfhumidy, hdfbaro):
 # if the file does not exist - create it and set up
         with h5py.File(fname, 'a') as u:
             dataforday = u.create_group('dailydata')
-            dt = np.dtype('i4')
+            dt = np.dtype('float32')
             datatemp_stamp = dataforday.create_dataset('temperature_C', shape=(1, 2), maxshape=(None, 2), dtype=dt)
             datahumid_stamp = dataforday.create_dataset('humidity', shape=(1, 2), maxshape=(None, 2), dtype=dt)
             databaro_stamp = dataforday.create_dataset('pressure', shape=(1, 2), maxshape=(None, 2), dtype=dt)

@@ -30,7 +30,6 @@ class getdata():  # get required data in 1 call
         self.humiddata = self.sampledata.humidity
         self.barodata_init = self.sampledata.pressure
         self.barodata = None
-        self.baro_data = None
         self.humid_data = None
         self.temp_data = None
 
@@ -38,7 +37,6 @@ class getdata():  # get required data in 1 call
         self.temp_data = '{:5.3f}'.format(self.tempdata / 1.)
         self.humid_data = '{:5.3f}'.format(self.humiddata / 1.)
         self.barodata = '{:5.3f}'.format(self.barodata_init / 10.)
-        self.baro_data = float(self.barodata)
         return self.temp_data, self.humid_data, self.barodata
 
 getting_data=getdata()

@@ -24,13 +24,16 @@ class getdata():  # get required data in 1 call
         self.humiddata = self.sampledata.humidity
         self.barodata_init = self.sampledata.pressure
         self.barodata = None
+        self.baro_data = None
+        self.humid_data = None
+        self.temp_data = None
 
     def doit(self):
-        temp_data = float(self.tempdata)
-        humid_data = float(self.humiddata)
+        self.temp_data = float(self.tempdata)
+        self.humid_data = float(self.humiddata)
         self.barodata = self.barodata_init / 10
-        baro_data = float(self.barodata)
-        return temp_data, humid_data, baro_data
+        self.baro_data = float(self.barodata)
+        return self.temp_data, self.humid_data, self.baro_data
 
 #takes timestamp from the BME280 code, converts to unixtime and puts it as an int
     def int_current_time(self):
@@ -51,8 +54,6 @@ class getdata():  # get required data in 1 call
         interval_time = datetime.timedelta(seconds=10)
         target_time = data_time + interval_time
         return (target_time)
-
-        return data_tick
 
     def dating(self):
         checktime = datetime.datetime.now()
@@ -176,31 +177,37 @@ class storedata():
     # core from datastorev2
 
     def __init__(self):
-        self.dest = './home/pi/climatedata/datafiles/'
+        self.dest = '/home/pi/climatedata/datafiles/'
         self.todaytemp = None
         self.todaytime = None
         self.names = None
         self.ext = None
         self.namedateobj = None
+        self.fileglob = None
 
     def movedata(self):
-        fileglob = glob.glob('*.hdf5')
+        self.fileglob = glob.glob('*.hdf5')
         if os.path.exists(self.dest):
             print('daily directory exists')
+            print(self.dest)
             self.todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
             self.todaytime = datetime.datetime.strptime(self.todaytemp, "%Y-%m-%d")
-            for i in fileglob:
+            for i in self.fileglob:
                 self.names, self.ext = os.path.splitext(i)
                 self.namedateobj = datetime.datetime.strptime(self.names, '%Y-%m-%d-week_%U')
                 if self.namedateobj < self.todaytime:
-                    os.system('mv ./home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
+                    print('file is from previous day')
+                    os.system('mv /home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
         else:
             os.makedirs(self.dest)
-            for i in fileglob:
+            print('making directory')
+            print(self.dest)
+            for i in self.fileglob:
                 self.names, self.ext = os.path.splitext(i)
                 self.namedateobj = datetime.datetime.strptime(self.names, '%Y-%m-%d-week_%U')
                 self.todaytime = datetime.datetime.strptime(self.todaytemp, "%Y-%m-%d")
                 if self.namedateobj < self.todaytime:
+                    print('file is from previous day')
                     os.system('mv /home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
 
 # #################___PROGRAM___################################
@@ -254,7 +261,7 @@ while True:
         if overday > first_date:
             dailystore = storedata()
             dailystore.movedata()
-            os.system('rclone copy ./home/pi/climatedata/datafiles Gdrive:/data')
+            os.system('rclone copy /home/pi/climatedata/datafiles/ Gdrive:/data')
             datars.save_date()
 
     except (KeyboardInterrupt, SystemExit):

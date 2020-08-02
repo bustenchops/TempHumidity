@@ -21,9 +21,9 @@ import pandas as pd
 class hdf5compile():
 
     def __init__(self):
-        self.prebarodatafileloc = './home/pi/climatedata/datafilesold/'
-        self.barodatafileloc = './home/pi/climatedata/datafiles/'
-        self.h5pyclimatefile = './home/pi/climatedata/climatedata.hdf5'
+        self.prebarodatafileloc = '/home/pi/climatedata/datafilesold/'
+        self.barodatafileloc = '/home/pi/climatedata/datafiles/'
+        self.h5pyclimatefile = '/home/pi/climatedata/climatedata.hdf5'
         self.filelist = None
         self.climateunixdata = []
         self.firsttimeentry = None
@@ -113,7 +113,7 @@ class climatefile():
     def __init__(self):
         self.inputfilename = 'weatherstats_ottawa_hourly.csv'
         self.h5pyclimate = 'climatedata.hdf5'
-        self.filenameloc = './home/pi/climatedata/'
+        self.filenameloc = '/home/pi/climatedata/'
 
         self.inputone = None
         self.inputname = None

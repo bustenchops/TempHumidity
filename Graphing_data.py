@@ -26,8 +26,8 @@ class rangeuserinput():
 class findandplot():
 
     def __init__(self):
-        self.startlocation = './home/pi/climatedata/'
-        self.file_name = './home/pi/climatedata/climatedata.hdf5'
+        self.startlocation = '/home/pi/climatedata/'
+        self.file_name = '/home/pi/climatedata/climatedata.hdf5'
         self.day1 = None
         self.ending= None
         self.day1_formatted = None
@@ -48,7 +48,7 @@ class findandplot():
         self.climate_temp_array = []
         self.climate_humidity_array = []
         self.climate_baro_array = []
-        self.data_temp_array =[]
+        self.data_temp_array = []
         self.data_humidity_array = []
         self.data_baro_array = []
         self.index_tracker = None
@@ -70,7 +70,7 @@ class findandplot():
             self.nearestvalue_start = self.climate_unixdata[min(range(len(self.climate_unixdata)), key=lambda i: abs(self.climate_unixdata[i] - self.timestamp_start))]
             self.timeentryindex_temp_start = np.where(self.climate_unixdata == self.nearestvalue_start)
             self.timeentryindex_start = self.timeentryindex_temp_start[0][0]
-            print('nearest first entry in climatedata:',self.nearestvalue_start, ' at: ', self.timeentryindex_start)
+            print('nearest first entry in climatedata:' ,self.nearestvalue_start, ' at: ', self.timeentryindex_start)
             self.nearestvalue_end = self.climate_unixdata[min(range(len(self.climate_unixdata)), key=lambda i: abs(self.climate_unixdata[i] - self.timestamp_end))]
             self.timeentryindex_temp_end = np.where(self.climate_unixdata == self.nearestvalue_end)
             self.timeentryindex_end = self.timeentryindex_temp_end[0][0]
@@ -92,7 +92,7 @@ class findandplot():
 
     def dotheplot(self, namefile_, rangeoftick):
         rangeofint = int(rangeoftick)
-        location_f = './home/pi/climatedata/plots/' + namefile_
+        location_f = '/home/pi/climatedata/plots/' + namefile_
 
         # Sets figure size in inches
         fig = plt.figure(figsize=(20, 60))
@@ -162,7 +162,7 @@ class findandplot():
 
     def dotheplot2(self, namefile_, namefile_b, namefile_c, rangeoftick):
         rangeofint = int(rangeoftick)
-        location_f = './home/pi/climatedata/plots/' + namefile_
+        location_f = '/home/pi/climatedata/plots/' + namefile_
 
         # Sets figure size in inches
         fig = plt.figure(figsize=(20, 60))
@@ -194,7 +194,7 @@ class findandplot():
         plt.show()
         fig.savefig(location_f, tight_layout = False)
 
-        location_f = './home/pi/climatedata/plots/' + namefile_b
+        location_f = '/home/pi/climatedata/plots/' + namefile_b
 
         # Sets figure size in inches
         fig = plt.figure(figsize=(20, 60))
@@ -225,7 +225,7 @@ class findandplot():
         plt.show()
         fig.savefig(location_f, tight_layout=False)
 
-        location_f = './home/pi/climatedata/plots/' + namefile_c
+        location_f = '/home/pi/climatedata/plots/' + namefile_c
 
         # Sets figure size in inches
         fig = plt.figure(figsize=(20, 60))

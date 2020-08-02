@@ -38,7 +38,7 @@ class getdata():  # get required data in 1 call
         self.temp_data = format(self.tempdata, '.2f')
         self.humid_data = format(self.humiddata, '.2f')
         self.barodata = self.barodata_init / 10
-        self.baro_data = format(self.baro_data, '.2f')
+        self.baro_data = format(self.barodata, '.2f')
         return self.temp_data, self.humid_data, self.baro_data
 
 getting_data=getdata()

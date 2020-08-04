@@ -191,6 +191,7 @@ class dailystore():
                 if self.namedateobj < self.todaytime:
                     print('file is from previous day')
                     os.system('mv /home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
+                    print('moved to:/home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
         else:
             os.makedirs(self.dest)
             print('making directory')
@@ -202,6 +203,7 @@ class dailystore():
                 if self.namedateobj < self.todaytime:
                     print('file is from previous day')
                     os.system('mv /home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
+                    print('moved to:/home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
 
 # #################___PROGRAM___################################
 

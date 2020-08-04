@@ -58,7 +58,7 @@ class getdata():  # get required data in 1 call
         return(checktime)
 
     def save_date(self):
-        with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
+        with open('/home/pi/Gits/TempHumidity/textsave.txt', 'w') as time_text:
             checktime = datetime.datetime.now()
             checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
             print('date from save_date')
@@ -68,7 +68,7 @@ class getdata():  # get required data in 1 call
 
     def date_recall(self):
         try:
-            os.path.isfile('/home/pi/Gits/Temphumidity/textsave.txt')
+            os.path.isfile('/home/pi/Gits/TempHumidity/textsave.txt')
             with open('textsave.txt', 'r') as time_read:
                 text = time_read.read()
                 recalldate = datetime.datetime.strptime(text, '%Y %m %d')
@@ -76,7 +76,7 @@ class getdata():  # get required data in 1 call
             print('sending recalldate from date_recall')
             return recalldate
         except:
-            with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
+            with open('/home/pi/Gits/TempHumidity/textsave.txt', 'w') as time_text:
                 checktime = datetime.datetime.now()
                 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
                 time_text.write(checktime_format)
@@ -248,8 +248,11 @@ while True:
         print("first date")
         # recalls the date from the text file
         next_date = datars.dating()
+        print('time now:', next_date)
         subdate = datetime.timedelta(hours=25)
+        print('delta time:', subdate)
         overday = next_date - subdate
+        print('25h ago:', overday)
 
         if overday < first_date:
             transfer_files = dailystore()

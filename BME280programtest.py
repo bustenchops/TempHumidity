@@ -250,8 +250,11 @@ while True:
         print("first date")
         # recalls the date from the text file
         next_date = datars.dating()
+        print('time now:', next_date)
         subdate = datetime.timedelta(hours=25)
+        print('delta time:', subdate)
         overday = next_date - subdate
+        print('25h ago:', overday)
 
         if overday < first_date:
             transfer_files = dailystore()

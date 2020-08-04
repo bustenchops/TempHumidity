@@ -6,23 +6,23 @@ import threading
 import numpy as np
 import glob
 
-# import smbus2
-# import bme280
+import smbus2
+import bme280
 
 # set up the BME
-# port = 1
-# address = 0x76
-# bus = smbus2.SMBus(port)
-# calibration_params = bme280.load_calibration_params(bus, address)
+port = 1
+address = 0x76
+bus = smbus2.SMBus(port)
+calibration_params = bme280.load_calibration_params(bus, address)
 
 
 class getdata():  # get required data in 1 call
     def __init__(self):
-        # self.sampledata = bme280.sample(bus, address, calibration_params)
-        self.timedata = datetime.datetime.now()
-        # self.tempdata = self.sampledata.temperature
-        # self.humiddata = self.sampledata.humidity
-        # self.barodata_init = self.sampledata.pressure
+        self.sampledata = bme280.sample(bus, address, calibration_params)
+        self.timedata = self.sampledata.timestamp
+        self.tempdata = self.sampledata.temperature
+        self.humiddata = self.sampledata.humidity
+        self.barodata_init = self.sampledata.pressure
         self.barodata = None
         self.humid_data = None
         self.temp_data = None
@@ -37,7 +37,8 @@ class getdata():  # get required data in 1 call
     def int_current_time(self):
         self.current_time = datetime.datetime.timestamp(self.timedata)
         time_data = int(self.current_time)
-        print('time from getdata int_current_time:', time_data)
+        print('time from getdata init')
+        print(time_data)
         return time_data
 
 # parse out the date from the data and return it to be used in the hd5 file
@@ -57,7 +58,7 @@ class getdata():  # get required data in 1 call
         return(checktime)
 
     def save_date(self):
-        with open('textsave.txt', 'w') as time_text:
+        with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
             checktime = datetime.datetime.now()
             checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
             print('date from save_date')
@@ -67,20 +68,20 @@ class getdata():  # get required data in 1 call
 
     def date_recall(self):
         try:
-            os.path.isfile('textsave.txt')
+            os.path.isfile('/home/pi/Gits/Temphumidity/textsave.txt')
             with open('textsave.txt', 'r') as time_read:
                 text = time_read.read()
                 recalldate = datetime.datetime.strptime(text, '%Y %m %d')
                 time_read.close()
-            print('file exists - sending recalldate from date_recall')
+            print('sending recalldate from date_recall')
             return recalldate
         except:
-            with open('textsave.txt', 'w') as time_text:
+            with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
                 checktime = datetime.datetime.now()
                 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
                 time_text.write(checktime_format)
                 time_text.close()
-            print('made file - sending date from function: date_recall exception')
+            print('sending date from function: date_recall exception')
             return checktime
 # Function not part of the class but is called in the program immediately after
 # the above class
@@ -207,53 +208,48 @@ class dailystore():
 while True:
     try:
         datars = getdata()
-        # # inits the sensor and gets baro temp, humid and time
-        # temptemp, temphumidy, tempbaro = datars.doit()
-        # #returns the data points as strings
-        # print('temp reading is')
-        # print(temptemp)
-        # print('humidity reading is')
-        # print(temphumidy)
-        # print('h4pressure reading is')
-        # print(tempbaro)
+        # inits the sensor and gets baro temp, humid and time
+        temptemp, temphumidy, tempbaro = datars.doit()
+        #returns the data points as strings
+        print('temp reading is')
+        print(temptemp)
+        print('humidity reading is')
+        print(temphumidy)
+        print('h4pressure reading is')
+        print(tempbaro)
 
         temptime = datars.int_current_time()
         # returns the timepoint
-        print('time reading is datars.int_Current_time:', temptime)
-        # print(temptime)
+        print('time reading is')
+        print(temptime)
 
         filedate = datars.string_current_date()
         # returns the date for the file name
-        print('filedate is:', filedate)
+        print(filedate)
 
         filenamealpha = filedate + '.hdf5'
         # add extension to the date for filename
-        print('name of file', filenamealpha)
+        print(filenamealpha)
 
-        # hd5file(filenamealpha, temptime, temptemp, temphumidy, tempbaro)
+        hd5file(filenamealpha, temptime, temptemp, temphumidy, tempbaro)
         # puts the data into HDF5 file
 
-        # time_interval = datars.timer_time()
-        #
+        time_interval = datars.timer_time()
+        # return the time data was acquired plus 3600 seconds for timerthread
+
         # waittime_ = countdown()
         # waittime_.timerthreadinit(time_interval)
         # # sets up the timer in a thread waits for set time from timestamp
         # waittime_.timerthread.join()
-        # # return the time data was acquired plus 3600 seconds for timerthread
-
-        # waits for thread to finish
+        # # waits for thread to finish
 
 
         first_date = datars.date_recall()
-        print("first date", first_date)
+        print("first date")
         # recalls the date from the text file
-
-        cur_date = datars.dating()
+        next_date = datars.dating()
         subdate = datetime.timedelta(hours=25)
-        overday = cur_date - subdate
-        print('nextdate (timenow):', cur_date)
-        print('daypast', overday)
-        print('amount subtracted:', subdate)
+        overday = next_date - subdate
 
         if overday < first_date:
             transfer_files = dailystore()

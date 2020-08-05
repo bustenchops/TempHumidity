@@ -179,7 +179,7 @@ class climatefile():
             print('making HDF5 file')
             # if the file does not exist - create it and set up
             with h5py.File(self.savefile, 'a') as f:
-                data_type = np.dtype('i4')
+                data_type = np.dtype('float')
                 self.climatehdf5entry = f.create_dataset('compiled_data', shape=(1, 8), maxshape=(None, 8), dtype=data_type)
                 self.length_olddata = len(f['compiled_data'])
                 print('size of the climate HD5F array')

@@ -255,7 +255,7 @@ class findandplot():
         plt.legend(loc='lower left')
         plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         plt.show()
-        fig.savefig(location_f, tight_layout=False)
+        fig.savefig(location_f)
 
         # bx = fig.add_subplot(3, 1, 2)
         # bx.scatter(self.climate_time_array, self.climate_humidity_array, s=3, color=[0, 0, 0], label='weather station')

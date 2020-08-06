@@ -49,8 +49,8 @@ class getdata():  # get required data in 1 call
 # full epoch variable to be used by timer
     def timer_time(self):
         data_time = self.timedata
-        interval_time = datetime.timedelta(seconds=3598)
-        # 543598 because at 3600s the intervals are 2 sec too long
+        interval_time = datetime.timedelta(seconds=20)
+        # testing short wait time
         target_time = data_time + interval_time
         return (target_time)
 

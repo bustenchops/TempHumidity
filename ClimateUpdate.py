@@ -100,6 +100,7 @@ class hdf5compile():
                         self.datasetoldtime = b['dailydata/temperature_C'][datapoints, 0]
                         self.datasetoldtemp = b['dailydata/temperature_C'][datapoints,1]
                         self.datasetoldhumid = b['dailydata/humidity'][datapoints,1]
+                        self.datasetoldbaro = b['dailydata/pressure'][datapoints, 1]
                         f['compiled_data'][self.timeentryindex, 4] = self.datasetoldtime
                         f['compiled_data'][self.timeentryindex, 5] = self.datasetoldtemp
                         f['compiled_data'][self.timeentryindex, 6] = self.datasetoldhumid

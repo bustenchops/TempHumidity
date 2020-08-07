@@ -17,9 +17,9 @@ class rangeuserinput():
         self.ticks = None
 
     def definedtime(self):
-        self.start_date = input('Input start date yyyy-mm-dd')
-        self.end_date = input('Input end date (inclusive) yyyy-mm-dd')
-        self.ticks = input('Input the interval for tick labels in hours')
+        self.start_date = input('Input start date: yyyy-mm-dd:  ')
+        self.end_date = input('Input end date not included in data: yyyy-mm-dd:  ')
+        self.ticks = input('Input the interval for tick labels in hours:  ')
         return (self.start_date, self.end_date, self.ticks)
 
 
@@ -59,7 +59,7 @@ class findandplot():
         # format the inputs to datetime objects
         self.day1_formatted = datetime.datetime.strptime(self.day1, '%Y-%m-%d')
         self.ending_formatted = datetime.datetime.strptime(self.ending, '%Y-%m-%d')
-        self.date_span_timedelta = self.ending_formatted - self.day1_formatted + (datetime.timedelta(days=1))
+        self.date_span_timedelta = self.ending_formatted - self.day1_formatted
         self.date_span = pd.Timedelta(self.date_span_timedelta)
         self.date_span_short = self.date_span.days
         print('day1: ', self.day1_formatted, ' lastday: ', self.ending_formatted, ' number days spanned: ', self.date_span_short)
@@ -70,11 +70,11 @@ class findandplot():
             self.nearestvalue_start = self.climate_unixdata[min(range(len(self.climate_unixdata)), key=lambda i: abs(self.climate_unixdata[i] - self.timestamp_start))]
             self.timeentryindex_temp_start = np.where(self.climate_unixdata == self.nearestvalue_start)
             self.timeentryindex_start = self.timeentryindex_temp_start[0][0]
-            print('nearest first entry in climatedata:' ,self.nearestvalue_start, ' at: ', self.timeentryindex_start)
+            print('nearest first entry in climatedata (start):' ,self.nearestvalue_start, ' at: ', self.timeentryindex_start)
             self.nearestvalue_end = self.climate_unixdata[min(range(len(self.climate_unixdata)), key=lambda i: abs(self.climate_unixdata[i] - self.timestamp_end))]
             self.timeentryindex_temp_end = np.where(self.climate_unixdata == self.nearestvalue_end)
             self.timeentryindex_end = self.timeentryindex_temp_end[0][0]
-            print('nearest first entry in climatedata:', self.nearestvalue_end, ' at: ', self.timeentryindex_end)
+            print('nearest first entry in climatedata (end):', self.nearestvalue_end, ' at: ', self.timeentryindex_end)
             self.index_tracker = self.timeentryindex_start
             while self.timeentryindex_end > self.timeentryindex_start:
                 self.climate_time_array_tempvalue = datetime.datetime.fromtimestamp(f['compiled_data'][self.index_tracker, 0])
@@ -147,7 +147,14 @@ class findandplot():
         dx.yaxis.set_ticks_position('left')
         dx.xaxis.set_ticks_position('bottom')
         dx.xaxis.set_tick_params(rotation=45)
-        dx.set_ylim([90, 110])
+        maxval = np.amax(self.data_baro_array)
+        maxlim = maxval + 0.5
+        minval = np.amin(self.data_baro_array)
+        if minval > 0:
+            minlim = minval - 0.5
+        else:
+            minlim = 99
+        dx.set_ylim([minlim, maxlim])
 
         tempaxis3 = dx.xaxis.get_ticklabels()
         tempaxis3 = list(set(tempaxis3) - set(tempaxis3[::rangeofint]))
@@ -157,7 +164,7 @@ class findandplot():
         plt.legend(loc='lower left')
         plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         plt.show()
-        fig.savefig(location_f, tight_layout = False)
+        fig.savefig(location_f)
 
 
     def dotheplot2(self, namefile_, namefile_b, namefile_c, rangeoftick):
@@ -192,7 +199,7 @@ class findandplot():
         plt.legend(loc='lower left')
         plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         plt.show()
-        fig.savefig(location_f, tight_layout = False)
+        fig.savefig(location_f)
 
         location_f = '/home/pi/climatedata/plots/' + namefile_b
 
@@ -223,7 +230,7 @@ class findandplot():
         plt.legend(loc='lower left')
         plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         plt.show()
-        fig.savefig(location_f, tight_layout=False)
+        fig.savefig(location_f)
 
         location_f = '/home/pi/climatedata/plots/' + namefile_c
 
@@ -245,7 +252,14 @@ class findandplot():
         ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks_position('bottom')
         ax.xaxis.set_tick_params(rotation=45)
-        ax.set_ylim([90, 110])
+        maxval = np.amax(self.data_baro_array)
+        maxlim = maxval + 0.5
+        minval = np.amin(self.data_baro_array)
+        if minval > 0:
+            minlim = minval - 0.5
+        else:
+            minlim = 99
+        ax.set_ylim([minlim, maxlim])
 
         tempaxis1 = ax.xaxis.get_ticklabels()
         tempaxis1 = list(set(tempaxis1) - set(tempaxis1[::rangeofint]))
@@ -296,7 +310,7 @@ class findandplot():
         # plt.legend(loc='lower left')
         # plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         # plt.show()
-        # fig.savefig(location_f, tight_layout = False)
+        # fig.savefig(location_f)
 
 
 

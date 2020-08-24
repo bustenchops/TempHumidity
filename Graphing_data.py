@@ -110,7 +110,7 @@ class findandplot():
         ax.spines['top'].set_visible(False)
         ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks_position('bottom')
-        ax.xaxis.set_tick_params(rotation=45)
+        ax.xaxis.set_tick_params(rotation=90)
 
         tempaxis1 = ax.xaxis.get_ticklabels()
         tempaxis1 = list(set(tempaxis1) - set(tempaxis1[::rangeofint]))
@@ -128,7 +128,7 @@ class findandplot():
         bx.spines['top'].set_visible(False)
         bx.yaxis.set_ticks_position('left')
         bx.xaxis.set_ticks_position('bottom')
-        bx.xaxis.set_tick_params(rotation=45)
+        bx.xaxis.set_tick_params(rotation=90)
 
         tempaxis2 = bx.xaxis.get_ticklabels()
         tempaxis2 = list(set(tempaxis2) - set(tempaxis2[::rangeofint]))
@@ -146,7 +146,7 @@ class findandplot():
         dx.spines['top'].set_visible(False)
         dx.yaxis.set_ticks_position('left')
         dx.xaxis.set_ticks_position('bottom')
-        dx.xaxis.set_tick_params(rotation=45)
+        dx.xaxis.set_tick_params(rotation=90)
         maxval = np.amax(self.data_baro_array)
         maxlim = maxval + 0.5
         minval = np.amin(self.data_baro_array)
@@ -162,7 +162,7 @@ class findandplot():
             label.set_visible(False)
 
         plt.legend(loc='lower left')
-        plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
+        plt.subplots_adjust(left=0.05, bottom=0.20, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         plt.show()
         fig.savefig(location_f)
 
@@ -189,7 +189,7 @@ class findandplot():
         ax.spines['top'].set_visible(False)
         ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks_position('bottom')
-        ax.xaxis.set_tick_params(rotation=45)
+        ax.xaxis.set_tick_params(rotation=90)
 
         tempaxis1 = ax.xaxis.get_ticklabels()
         tempaxis1 = list(set(tempaxis1) - set(tempaxis1[::rangeofint]))
@@ -197,7 +197,7 @@ class findandplot():
             label.set_visible(False)
 
         plt.legend(loc='lower left')
-        plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
+        plt.subplots_adjust(left=0.05, bottom=0.20, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         plt.show()
         fig.savefig(location_f)
 
@@ -220,7 +220,7 @@ class findandplot():
         ax.spines['top'].set_visible(False)
         ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks_position('bottom')
-        ax.xaxis.set_tick_params(rotation=45)
+        ax.xaxis.set_tick_params(rotation=90)
 
         tempaxis1 = ax.xaxis.get_ticklabels()
         tempaxis1 = list(set(tempaxis1) - set(tempaxis1[::rangeofint]))
@@ -228,7 +228,7 @@ class findandplot():
             label.set_visible(False)
 
         plt.legend(loc='lower left')
-        plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
+        plt.subplots_adjust(left=0.05, bottom=0.20, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         plt.show()
         fig.savefig(location_f)
 
@@ -251,7 +251,7 @@ class findandplot():
         ax.spines['top'].set_visible(False)
         ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks_position('bottom')
-        ax.xaxis.set_tick_params(rotation=45)
+        ax.xaxis.set_tick_params(rotation=90)
         maxval = np.amax(self.data_baro_array)
         maxlim = maxval + 0.5
         minval = np.amin(self.data_baro_array)
@@ -267,7 +267,7 @@ class findandplot():
             label.set_visible(False)
 
         plt.legend(loc='lower left')
-        plt.subplots_adjust(left=0.05, bottom=0.16, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
+        plt.subplots_adjust(left=0.05, bottom=0.20, right=0.95, top=0.95, wspace=0.2, hspace=1.00)
         plt.show()
         fig.savefig(location_f)
 

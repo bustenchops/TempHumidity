@@ -58,10 +58,10 @@ class getdata():  # get required data in 1 call
         return(checktime)
 
     def save_date(self):
-        with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
+        with open('textsave.txt', 'w') as time_text:
             checktime = datetime.datetime.now()
             checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
-            print('date from save_date')
+            print('SAVING THE DATE in textsave.txt')
             print(checktime_format)
             time_text.write(checktime_format)
             time_text.close()
@@ -69,14 +69,14 @@ class getdata():  # get required data in 1 call
     def date_recall(self):
         try:
             os.path.isfile('/home/pi/Gits/Temphumidity/textsave.txt')
-            with open('/home/pi/Gits/TempHumidity/textsave.txt', 'r') as time_read:
+            with open('textsave.txt', 'r') as time_read:
                 text = time_read.read()
                 recalldate = datetime.datetime.strptime(text, '%Y %m %d')
                 time_read.close()
             print('sending recalldate from date_recall')
             return recalldate
         except:
-            with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
+            with open('textsave.txt', 'w') as time_text:
                 checktime = datetime.datetime.now()
                 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
                 time_text.write(checktime_format)

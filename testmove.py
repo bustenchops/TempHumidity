@@ -58,7 +58,7 @@ class getdata():  # get required data in 1 call
         return(checktime)
 
     def save_date(self):
-        with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
+        with open('/home/pi/Gits/TempHumidity/textsave.txt', 'w') as time_text:
             checktime = datetime.datetime.now()
             checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
             print('date from save_date')
@@ -68,7 +68,7 @@ class getdata():  # get required data in 1 call
 
     def date_recall(self):
         try:
-            os.path.isfile('/home/pi/Gits/Temphumidity/textsave.txt')
+            os.path.isfile('/home/pi/Gits/TempHumidity/textsave.txt')
             print('text date file is present')
             with open('textsave.txt', 'r') as time_read:
                 text = time_read.read()
@@ -79,7 +79,7 @@ class getdata():  # get required data in 1 call
             return recalldate
         except:
             print('cant find file with text date')
-            with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
+            with open('/home/pi/Gits/TempHumidity/textsave.txt', 'w') as time_text:
                 checktime = datetime.datetime.now()
                 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
                 time_text.write(checktime_format)

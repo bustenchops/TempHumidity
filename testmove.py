@@ -249,7 +249,7 @@ datars = getdata()
 
 
 first_date = datars.date_recall()
-print("first date")
+print('first date:', first_date)
         # recalls the date from the text file
 next_date = datars.dating()
 print('time now:', next_date)

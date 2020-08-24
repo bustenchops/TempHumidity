@@ -69,18 +69,22 @@ class getdata():  # get required data in 1 call
     def date_recall(self):
         try:
             os.path.isfile('/home/pi/Gits/Temphumidity/textsave.txt')
+            print('text date file is present')
             with open('textsave.txt', 'r') as time_read:
                 text = time_read.read()
                 recalldate = datetime.datetime.strptime(text, '%Y %m %d')
+                print('date in file:', recalldate)
                 time_read.close()
             print('sending recalldate from date_recall')
             return recalldate
         except:
+            print('cant find file with text date')
             with open('/home/pi/Gits/Temphumidity/textsave.txt', 'w') as time_text:
                 checktime = datetime.datetime.now()
                 checktime_format = datetime.date.strftime(checktime, '%Y %m %d')
                 time_text.write(checktime_format)
                 time_text.close()
+                print('date:',checktime)
             print('sending date from function: date_recall exception')
             return checktime
 # Function not part of the class but is called in the program immediately after
@@ -255,7 +259,7 @@ overday = next_date - subdate
 print('25h ago:', overday)
 
 if overday < first_date:
-    print()
+    print('true')
     transfer_files = dailystore()
     transfer_files.movedata()
     print('copying the climatedata folder to Gdrive')

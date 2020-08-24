@@ -155,11 +155,12 @@ class countdown():
 # while loop that repeatedly checks the wait time and sets the inter-interval check time
     def threadtimer(self):
         print('Starting...')
+        second_count = 0
         while self.waittime() is True:
-            second_count = 0
             print('waiting for timer round: ', second_count)
-            time.sleep(1)
             second_count += 1
+            time.sleep(1)
+
         print('DING FRIES ARE DONE')
 
 # quick method to print out the variables to see if things are working

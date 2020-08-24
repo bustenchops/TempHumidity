@@ -146,7 +146,7 @@ class countdown():
 
     def waittime(self):  # acquires the current time epoch and compares to the datatimestamp
         timertime = datetime.datetime.now()
-        print('compare time to target')
+        # print('compare time to target')
         if self.t_target > timertime:
             return True
         elif self.t_target <= timertime:
@@ -156,7 +156,7 @@ class countdown():
     def threadtimer(self):
         print('Starting...')
         while self.waittime() is True:
-            print('waiting for timer')
+            # print('waiting for timer')
             time.sleep(1)
         print('DING FRIES ARE DONE')
 
@@ -181,16 +181,19 @@ class dailystore():
 
     def movedata(self):
         self.fileglob = glob.glob('*.hdf5')
+        print(self.fileglob)
         if os.path.exists(self.dest):
             print('daily directory exists')
             print(self.dest)
             self.todaytemp = datetime.datetime.now().strftime("%Y-%m-%d")
             self.todaytime = datetime.datetime.strptime(self.todaytemp, "%Y-%m-%d")
             for i in self.fileglob:
+                print('file:' , i)
                 self.names, self.ext = os.path.splitext(i)
                 self.namedateobj = datetime.datetime.strptime(self.names, '%Y-%m-%d-week_%U')
                 if self.namedateobj < self.todaytime:
                     print('file is from previous day')
+                    print('moving to /home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
                     os.system('mv /home/pi/Gits/TempHumidity/' + i + ' ' + self.dest)
         else:
             os.makedirs(self.dest)

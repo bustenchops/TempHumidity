@@ -146,7 +146,7 @@ class countdown():
 
     def waittime(self):  # acquires the current time epoch and compares to the datatimestamp
         timertime = datetime.datetime.now()
-        # print('compare time to target')
+        print('compare time to target')
         if self.t_target > timertime:
             return True
         elif self.t_target <= timertime:
@@ -156,8 +156,10 @@ class countdown():
     def threadtimer(self):
         print('Starting...')
         while self.waittime() is True:
-            # print('waiting for timer')
+            second_count = 0
+            print('waiting for timer round: ', second_count)
             time.sleep(1)
+            second_count += 1
         print('DING FRIES ARE DONE')
 
 # quick method to print out the variables to see if things are working

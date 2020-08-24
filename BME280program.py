@@ -258,7 +258,7 @@ while True:
         overday = next_date - subdate
         print('25h ago:', overday)
 
-        if overday < first_date:
+        if overday > first_date:
             transfer_files = dailystore()
             transfer_files.movedata()
             print('copying the climatedata folder to Gdrive')

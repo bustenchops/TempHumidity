@@ -265,7 +265,8 @@ if overday < first_date:
     print('copying the climatedata folder to Gdrive')
     os.system('rclone copy /home/pi/climatedata/datafiles Gdrive:')
     datars.save_date()
-
+else:
+    print('not true')
     # except (KeyboardInterrupt, SystemExit):
     #     print ('keyboardinterrupt found!')
     #     print ('...Program Stopped Manually!')

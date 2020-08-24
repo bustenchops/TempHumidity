@@ -258,7 +258,7 @@ print('delta time:', subdate)
 overday = next_date - subdate
 print('25h ago:', overday)
 
-if overday < first_date:
+if overday > first_date:
     print('true')
     transfer_files = dailystore()
     transfer_files.movedata()

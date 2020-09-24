@@ -10,7 +10,7 @@ import pandas as pd
 import pytz
 
 # filename = './home/climatedata/weatherstats_ottawa_hourly.csv'
-# df = pd.read_csv(filename, index_col='date_time_local')
+# df = pd.read_csv(filename, index_col='date')
 # print(df.unixtime[0:5])
 # howbig = df.shape[0]
 # print(howbig)
@@ -37,8 +37,8 @@ import pytz
 # currentdate = time.strftime("%Y-%m-%d-week_%U", time.localtime(timedata))
 # print(currentdate)
 
-
-# checktime = datetime.datetime.now()
+# testin = input('date in format')
+checktime = datetime.datetime.now()
 # deltatime = datetime.timedelta(seconds=3600)
 # futuretime = checktime + deltatime
 # print('checktime')
@@ -50,11 +50,15 @@ import pytz
 # print(timestamp)
 # if futuretime > checktime:
 #     print('yes future is greater')
-# checktime_format_manual = '2020-01-02'
-# tttt = datetime.datetime.strptime(checktime_format_manual, '%Y-%m-%d')
-# print('ttt trptime')
-# print(tttt)
-#
+checktime_format_manual = '2020-09-20'
+tttt = datetime.datetime.strptime(checktime_format_manual, '%Y-%m-%d')
+print('ttt trptime')
+print(tttt)
+ttttt = time.mktime(tttt.timetuple())
+print(ttttt)
+if checktime > tttt:
+    print('yes it works')
+
 #
 # def date_recall():
 #     fart = datetime.datetime.now()
@@ -106,16 +110,16 @@ import pytz
 #
 # print(todaytemp)
 # print(todaytime)
-testfile = 'test.hdf5'
-hdftime = 1571892942
-hdftemp = 24.5458889797
-
-
-with h5py.File(testfile, 'a') as u:
-    dataforday = u.create_group('dailydata')
-    dt = np.dtype('float')
-    datatemp_stamp = dataforday.create_dataset('temperature_C', shape=(1, 2), maxshape=(None, 2), dtype=dt)
-    datatemp_stamp[0, 0] = hdftime
-    datatemp_stamp[0, 1] = hdftemp
-    print('closing file again')
-    u.close()
+# testfile = 'test.hdf5'
+# hdftime = 1571892942
+# hdftemp = 24.5458889797
+#
+#
+# with h5py.File(testfile, 'a') as u:
+#     dataforday = u.create_group('dailydata')
+#     dt = np.dtype('float')
+#     datatemp_stamp = dataforday.create_dataset('temperature_C', shape=(1, 2), maxshape=(None, 2), dtype=dt)
+#     datatemp_stamp[0, 0] = hdftime
+#     datatemp_stamp[0, 1] = hdftemp
+#     print('closing file again')
+#     u.close()

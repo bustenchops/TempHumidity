@@ -70,7 +70,7 @@ class getdata():  # get required data in 1 call
     def date_recall(self):
         try:
             os.path.isfile('/home/pi/Gits/TempHumidity/textsave.txt')
-            with open('textsave.txt', 'r') as time_read:
+            with open('../textsave.txt', 'r') as time_read:
                 text = time_read.read()
                 recalldate = datetime.datetime.strptime(text, '%Y %m %d')
                 time_read.close()

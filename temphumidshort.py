@@ -9,6 +9,7 @@ import glob
 import pigpio
 import DHT22
 
+#DHT22 vesion
 
 # #################### make the hdf5 data and get the data ################
 class getdata():  # get required data in 1 call

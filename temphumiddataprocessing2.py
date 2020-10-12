@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import glob
 from dateutil.relativedelta import relativedelta
 
+#DHT22 version
 
 class rangeuserinput():
 

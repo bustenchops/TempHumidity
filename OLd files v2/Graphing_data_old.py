@@ -335,4 +335,4 @@ if typeofplot == "2":
     nameoftheplotfile1 = 'plot_temp' + first_day + '_to_' + last_day
     nameoftheplotfile2 = 'plot_humid' + first_day + '_to_' + last_day
     nameoftheplotfile3 = 'plot_baro' + first_day + '_to_' + last_day
-    pull_data_and_plot.dotheplot2(nameoftheplotfile1, nameoftheplotfile2,nameoftheplotfile3, tick_interval)
+    pull_data_and_plot.dotheplot2(nameoftheplotfile1, nameoftheplotfile2, nameoftheplotfile3, tick_interval)

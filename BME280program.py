@@ -264,8 +264,8 @@ while True:
         if overday > first_date:
             transfer_files = dailystore()
             transfer_files.movedata()
-            print('copying the climatedata folder to Gdrive')
-            os.system('rclone copy /home/pi/climatedata/datafiles Gdrive:')
+            print('copying the climatedata folder to Onedrive')
+            os.system('rclone copy /home/pi/climatedata/datafiles odrive:/Data/Room3507stats')
             datars.save_date()
 
     except (KeyboardInterrupt, SystemExit):

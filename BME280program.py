@@ -266,6 +266,7 @@ while True:
             transfer_files.movedata()
             print('copying the climatedata folder to Onedrive')
             os.system('rclone copy /home/pi/climatedata/datafiles odrive:/Room3507stats')
+            ## changed save location
             datars.save_date()
 
     except (KeyboardInterrupt, SystemExit):

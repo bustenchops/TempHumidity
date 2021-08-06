@@ -265,7 +265,7 @@ while True:
             transfer_files = dailystore()
             transfer_files.movedata()
             print('copying the climatedata folder to Onedrive')
-            os.system('rclone copy /home/pi/climatedata/datafiles odrive:/Data/Room3507stats')
+            os.system('rclone copy /home/pi/climatedata/datafiles odrive:/Room3507stats')
             datars.save_date()
 
     except (KeyboardInterrupt, SystemExit):

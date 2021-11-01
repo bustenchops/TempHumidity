@@ -151,9 +151,9 @@ class findandplot():
         maxlim = maxval + 0.5
         minval = np.amin(self.data_baro_array)
         if minval > 0:
-            minlim = minval - 0.5
+            minlim = minval - 1.0
         else:
-            minlim = 99
+            minlim = 96.5
         dx.set_ylim([minlim, maxlim])
 
         tempaxis3 = dx.xaxis.get_ticklabels()

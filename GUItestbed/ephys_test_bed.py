@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Room 3507 - environment data")
 
-        layout = QGridLayout()
+        self.layout = QGridLayout()
 
         toolbar = QToolBar("Function toolbar")
         self.addToolBar(toolbar)

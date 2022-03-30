@@ -19,6 +19,9 @@ import sys
 from PyQt5 import (
     QtCore, QtGui, QtWidgets
 )
+from PyQt5.QtWidgets import (
+    QMessageBox, QDialog
+)
 
 
 class Ui_MainWindow(object):
@@ -55,6 +58,21 @@ class Ui_MainWindow(object):
         self.climate_baro = None
 
         self.searchrange = None
+
+        #declare variable for hdf5compile of all datasets
+        # self.prebarodatafileloc = '/home/pi/climatedata/datafilesold/'
+        self.barodatafileloc = None
+        # self.h5pyclimatefile = '/home/pi/climatedata/climatedata.hdf5'
+        self.filelist = None
+        self.climateunixdata = []
+        self.firsttimeentry = None
+        self.datasetoldtemp = None
+        self.datasetoldhumid = None
+        self.nearestvalue = None
+        self.timeentryindex = None
+        self.timeentryindex_temp = None
+        self.datasetoldtime = None
+        self.datasetoldbaro = None
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -138,6 +156,7 @@ class Ui_MainWindow(object):
         self.actionHDF_File.triggered.connect(self.HDFfileselect)
         self.actionClimate_File.triggered.connect(self.climatefileselect)
         self.action_Update_Climate_Data.triggered.connect(self.initclimateupdate)
+        self.actionDataUpdate.triggered.connect(self.complilepostbaro)
         self.actionTemp.changed.connect(self.lineEdit.clear) # type: ignore
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -159,13 +178,14 @@ class Ui_MainWindow(object):
         self.actionHDF_File.setText(_translate("MainWindow", "HDF File"))
         self.actionDataUpdate.setText(_translate("MainWindow", "!Update Data!"))
 
-
     def datafolderselect(self):
         print("click data folder")
         print(self.datadir_path)
         self.datadir_path = QtWidgets.QFileDialog.getExistingDirectory()
         self.actionData_Folder.setStatusTip(self.datadir_path)
         print(self.datadir_path)
+        self.barodatafileloc = self.datadir_path + '/'
+        print(self.barodatafileloc)
         # self.fileboxlist()
 
     def HDFfileselect(self):
@@ -180,7 +200,6 @@ class Ui_MainWindow(object):
         print(self.climatefile_path)
         self.climatefile_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         print(self.climatefile_path)
-
         # self.fileboxlist()
 
     def initclimateupdate(self):
@@ -233,10 +252,11 @@ class Ui_MainWindow(object):
                 self.climateupdate_size = self.climateupdate_size - 1
                 if self.climateupdate_size < 0:
                     self.searchdata = 2
-                    print('the update file does not go back far enough for consistent data, re-download with more rows')
-                    print('if this is a new file then continue')
-                    self.inputconfirm = input('Do you want to continue? (y or n)')
-                    if self.inputconfirm == 'y':
+                    #print('the update file does not go back far enough for consistent data, re-download with more rows')
+                    #print('if this is a new file then continue')
+                    #self.inputconfirm = input('Do you want to continue? (y or n)')
+                    self.climatedatasetalert()
+                    if self.inputconfirm == 'OK':
                         self.climateupdate_size = self.climatedataupdate.shape[0] - 1
                         print('size to use is:')
                         print(self.climateupdate_size)
@@ -289,6 +309,108 @@ class Ui_MainWindow(object):
                         if passnum < self.searchrange - 1:
                             f['compiled_data'].resize((f['compiled_data'].shape[0] + 1, f['compiled_data'].shape[1]))
                 f.close()
+
+    # LEGEND FOR HDF5FILE
+    # 0 unixtime for downloaded climate data
+    # 1 temp for downloaded climate data
+    # 2 humidity for downloaded climate data
+    # 3 baro for downloaded climate data
+    # 4 time from dataset
+    # 5 temp from dataset
+    # 6 humidity from dataset
+    # 7 baro from dataset
+
+
+    def complilepostbaro(self):
+        self.barodatafileloc = self.datadir_path + '/'
+        #this is list comprehension
+        print('compiling list of pre-baro reading hdf5 files')
+        self.filelist = [file for file in glob.glob(self.barodatafileloc + '*.hdf5')]
+        print('sort files ascending')
+        self.filelist.sort()
+        print(self.filelist)
+        with h5py.File(self.hdffile_path, 'a') as f:
+            print('open')
+            self.climateunixdata = f['compiled_data'][:, 0]
+            for dataset in self.filelist:
+                with h5py.File(dataset, 'a') as b:
+                    print('open data file')
+                    self.datafileunix = b['dailydata/temperature_C'][:, 0]
+                    lastarraypos = len(self.datafileunix) - 1
+                    lastarrayval = self.datafileunix[lastarraypos]
+                    print('array val found')
+                    print(lastarrayval)
+                    if lastarrayval >= 1596415861:
+                        print('has baro')
+                        self.firsttimeentry = b['dailydata/temperature_C'][0, 0]
+                        print('first time entry:')
+                        print(self.firsttimeentry)
+                        self.nearestvalue = self.climateunixdata[min(range(len(self.climateunixdata)), key = lambda i: abs(self.climateunixdata[i]-self.firsttimeentry))]
+                        print('nearest entry in climatedata:')
+                        print(self.nearestvalue)
+                        self.timeentryindex_temp = np.where(self.climateunixdata == self.nearestvalue)
+                        self.timeentryindex = self.timeentryindex_temp[0][0]
+                        print('nearest entry index location:')
+                        print(self.timeentryindex)
+                        for datapoints in range(len(b['dailydata/temperature_C'])):
+                            print('data entry:')
+                            print(datapoints)
+                            print('at:')
+                            print(self.timeentryindex)
+                            self.datasetoldtime = b['dailydata/temperature_C'][datapoints, 0]
+                            self.datasetoldtemp = b['dailydata/temperature_C'][datapoints,1]
+                            self.datasetoldhumid = b['dailydata/humidity'][datapoints,1]
+                            self.datasetoldbaro = b['dailydata/pressure'][datapoints, 1]
+                            f['compiled_data'][self.timeentryindex, 4] = self.datasetoldtime
+                            f['compiled_data'][self.timeentryindex, 5] = self.datasetoldtemp
+                            f['compiled_data'][self.timeentryindex, 6] = self.datasetoldhumid
+                            f['compiled_data'][self.timeentryindex, 7] = self.datasetoldbaro
+                            self.timeentryindex += 1
+                        b.close()
+                    else:
+                        print('no pressure')
+                        self.firsttimeentry = b['dailydata/temperature_C'][0, 0]
+                        print('first time entry:')
+                        print(self.firsttimeentry)
+                        self.nearestvalue = self.climateunixdata[min(range(len(self.climateunixdata)), key=lambda i: abs(self.climateunixdata[i] - self.firsttimeentry))]
+                        print('nearest entry in climatedata:')
+                        print(self.nearestvalue)
+                        self.timeentryindex_temp = np.where(self.climateunixdata == self.nearestvalue)
+                        self.timeentryindex = self.timeentryindex_temp[0][0]
+                        print('nearest entry index location:')
+                        print(self.timeentryindex)
+                        for datapoints in range(len(b['dailydata/temperature_C'])):
+                            print('data entry:')
+                            print(datapoints)
+                            print('at:')
+                            print(self.timeentryindex)
+                            self.datasetoldtime = b['dailydata/temperature_C'][datapoints, 0]
+                            self.datasetoldtemp = b['dailydata/temperature_C'][datapoints, 1]
+                            self.datasetoldhumid = b['dailydata/humidity'][datapoints, 1]
+                            f['compiled_data'][self.timeentryindex, 4] = self.datasetoldtime
+                            f['compiled_data'][self.timeentryindex, 5] = self.datasetoldtemp
+                            f['compiled_data'][self.timeentryindex, 6] = self.datasetoldhumid
+                            self.timeentryindex += 1
+                        b.close()
+        f.close()
+
+    def climatedatasetalert(self):
+        self.msg = QMessageBox()
+        self.msg.setIcon(QMessageBox.Information)
+
+        self.msg.setText("Climate Data File does not go far enough back.")
+        self.msg.setInformativeText("If this is a new HDF5 file then click ok")
+        self.msg.setWindowTitle("Attention.")
+        self.msg.setDetailedText("The update file does not go back far enough for consistent data, re-download with more rows")
+        self.msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        self.msg.buttonClicked.connect(self.msgbtn)
+
+        retval = self.msg.exec_()
+
+    def msgbtn(self, i):
+        print("Button pressed is:", i.text())
+        self.inputconfirm = i.text()
+        print(self.inputconfirm)
 
 if __name__ == "__main__":
     import sys

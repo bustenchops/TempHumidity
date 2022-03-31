@@ -224,6 +224,7 @@ class Ui_MainWindow(object):
         print(self.datadir_path)
         self.barodatafileloc = self.datadir_path + '/'
         print(self.barodatafileloc)
+        self.statusbar.showMessage('Data Folder Selected')
         # self.fileboxlist()
 
     def HDFfileselect(self):
@@ -233,6 +234,7 @@ class Ui_MainWindow(object):
         print(self.hdffile_path)
         self.graphdone = 0
         self.actionGRAPH.setChecked(False)
+        self.statusbar.showMessage('HDF5 File Selected')
         # self.fileboxlist()
 
     def climatefileselect(self):
@@ -240,6 +242,7 @@ class Ui_MainWindow(object):
         print(self.climatefile_path)
         self.climatefile_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         print(self.climatefile_path)
+        self.statusbar.showMessage('Weather Data File Selected')
         # self.fileboxlist()
 
     def initclimateupdate(self):
@@ -348,6 +351,7 @@ class Ui_MainWindow(object):
                         self.lastnum_olddata += 1
                         if passnum < self.searchrange - 1:
                             f['compiled_data'].resize((f['compiled_data'].shape[0] + 1, f['compiled_data'].shape[1]))
+                self.statusbar.showMessage('Done compiling climate data')
                 f.close()
 
     # LEGEND FOR HDF5FILE
@@ -375,12 +379,13 @@ class Ui_MainWindow(object):
             for dataset in self.filelist:
                 with h5py.File(dataset, 'a') as b:
                     print('open data file')
+                    print(dataset)
                     self.datafileunix = b['dailydata/temperature_C'][:, 0]
                     lastarraypos = len(self.datafileunix) - 1
                     lastarrayval = self.datafileunix[lastarraypos]
                     print('array val found')
                     print(lastarrayval)
-                    if lastarrayval >= 1596415861:
+                    if lastarrayval >= 1596500000:
                         print('has baro')
                         self.firsttimeentry = b['dailydata/temperature_C'][0, 0]
                         print('first time entry:')
@@ -437,7 +442,6 @@ class Ui_MainWindow(object):
     def climatedatasetalert(self):
         self.msg = QMessageBox()
         self.msg.setIcon(QMessageBox.Information)
-
         self.msg.setText("Climate Data File does not go far enough back.")
         self.msg.setInformativeText("If this is a new HDF5 file then click ok")
         self.msg.setWindowTitle("Attention.")
@@ -455,6 +459,7 @@ class Ui_MainWindow(object):
     def makegrph(self):
         if self.actionGRAPH.isChecked():
             if self.graphdone == 0:
+                self.statusbar.showMessage('Compiling graphs')
                 self.graphdone = 1
                 print('clear old arrays')
                 self.climate_time_array.clear()

@@ -22,6 +22,7 @@ from PyQt5 import (
 from PyQt5.QtWidgets import (
     QMessageBox, QDialog
 )
+import pyqtgraph as pg
 
 
 class Ui_MainWindow(object):
@@ -74,6 +75,35 @@ class Ui_MainWindow(object):
         self.datasetoldtime = None
         self.datasetoldbaro = None
 
+        #delcare variables for graphing - note some not used
+        #self.startlocation = '/home/pi/climatedata/'
+        #self.file_name = '/home/pi/climatedata/climatedata.hdf5'
+        self.day1 = None
+        self.ending = None
+        self.day1_formatted = None
+        self.ending_formatted = None
+        self.date_span_timedelta = None
+        self.date_span = None
+        self.climate_unixdata = None
+        self.date_span_short = None
+        self.timestamp_start = None
+        self.timestamp_end = None
+        self.nearestvalue_start = None
+        self.timeentryindex_temp_start = None
+        self.timeentryindex_start = None
+        self.nearestvalue_end = None
+        self.timeentryindex_temp_end = None
+        self.timeentryindex_end = None
+        self.climate_time_array = []
+        self.climate_temp_array = []
+        self.climate_humidity_array = []
+        self.climate_baro_array = []
+        self.data_temp_array = []
+        self.data_humidity_array = []
+        self.data_baro_array = []
+        self.index_tracker = None
+
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -86,15 +116,18 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
 
         #put graph 1 here
-        self.lineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget)
-        self.lineEdit.setObjectName("lineEdit")
-        self.verticalLayout.addWidget(self.lineEdit)
+        self.maingraph = pg.PlotWidget(name='maingraph', axisItems={'bottom': pg.DateAxisItem()})
+        self.maingraph.setBackground('white')
+        self.verticalLayout.addWidget(self.maingraph)
 
         #put graph 2 here
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.verticalLayoutWidget)
-        self.lineEdit_2.setObjectName("lineEdit_2")
-        self.verticalLayout.addWidget(self.lineEdit_2)
+        self.zoomgraph = pg.PlotWidget(name='zoomgraph', axisItems={'bottom': pg.DateAxisItem()})
+        self.zoomgraph.setBackground('white')
+        self.verticalLayout.addWidget(self.zoomgraph)
 
+        self.zoomarea = pg.LinearRegionItem([0, 1])
+        self.zoomarea.setZValue(-10)
+        self.maingraph.addItem(self.zoomarea)
 
         MainWindow.setCentralWidget(self.centralwidget)
         # Setup toolbar
@@ -119,6 +152,7 @@ class Ui_MainWindow(object):
         self.actionBaro.setCheckable(True)
         self.actionBaro.setObjectName("actionBaro")
         self.actionGRAPH = QtWidgets.QAction(MainWindow)
+        self.actionGRAPH.setCheckable(True)
         self.actionGRAPH.setObjectName("actionGRAPH")
         self.actionHDF_File = QtWidgets.QAction(MainWindow)
         self.actionHDF_File.setObjectName("actionHDF_File")
@@ -157,7 +191,11 @@ class Ui_MainWindow(object):
         self.actionClimate_File.triggered.connect(self.climatefileselect)
         self.action_Update_Climate_Data.triggered.connect(self.initclimateupdate)
         self.actionDataUpdate.triggered.connect(self.complilepostbaro)
-        self.actionTemp.changed.connect(self.lineEdit.clear) # type: ignore
+        self.actionTemp.triggered.connect(self.tempgraph)
+        self.actionHumid.triggered.connect(self.humidgraph)
+        self.actionBaro.triggered.connect(self.barograph)
+        self.actionGRAPH.triggered.connect(self.makegrph)
+        # self.actionTemp.changed.connect(self.lineEdit.clear) # type: ignore
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -193,6 +231,8 @@ class Ui_MainWindow(object):
         print(self.hdffile_path)
         self.hdffile_path, _ = QtWidgets.QFileDialog.getSaveFileName()
         print(self.hdffile_path)
+        self.graphdone = 0
+        self.actionGRAPH.setChecked(False)
         # self.fileboxlist()
 
     def climatefileselect(self):
@@ -411,6 +451,140 @@ class Ui_MainWindow(object):
         print("Button pressed is:", i.text())
         self.inputconfirm = i.text()
         print(self.inputconfirm)
+
+    def makegrph(self):
+        if self.actionGRAPH.isChecked():
+            if self.graphdone == 0:
+                self.graphdone = 1
+                print('clear old arrays')
+                self.climate_time_array.clear()
+                self.climate_temp_array.clear()
+                self.climate_humidity_array.clear()
+                self.climate_baro_array.clear()
+                self.data_temp_array.clear()
+                self.data_humidity_array.clear()
+                self.data_baro_array.clear()
+                self.actionTemp.setChecked(False)
+                self.actionHumid.setChecked(False)
+                self.actionBaro.setChecked(False)
+                print('making the graph')
+                self.index_tracker = 0
+                with h5py.File(self.hdffile_path, 'a') as f:
+                    self.climate_unixdata = f['compiled_data'][:, 0]
+                    self.arraylen = len(self.climate_unixdata)
+                    self.arraycount = len(self.climate_unixdata)
+                    print('arraylength = ')
+                    print(self.arraylen)
+                    while self.index_tracker < self.arraylen:
+                        print(str(self.index_tracker) + " of " + str(self.arraylen))
+                        # self.climate_time_array_tempvalue = datetime.datetime.fromtimestamp(f['compiled_data'][self.index_tracker, 0])
+                        self.climate_time_array.append(f['compiled_data'][self.index_tracker, 0])
+                        self.climate_temp_array.append(f['compiled_data'][self.index_tracker, 1])
+                        self.climate_humidity_array.append(f['compiled_data'][self.index_tracker, 2])
+                        self.climate_baro_array.append((f['compiled_data'][self.index_tracker, 3]))
+                        self.data_temp_array.append(f['compiled_data'][self.index_tracker, 5])
+                        self.data_humidity_array.append(f['compiled_data'][self.index_tracker, 6])
+                        self.data_baro_array.append(f['compiled_data'][self.index_tracker, 7])
+                        self.index_tracker += 1
+                        self.arraycount -= 1
+                    f.close()
+                self.statusbar.showMessage('Done compiling graphs')
+            else:
+                if self.graphdone == 1:
+                    self.statusbar.showMessage('Graph compiling done already')
+        else:
+            self.statusbar.showMessage('Graph compiling done already')
+
+    def tempgraph(self):
+        if self.actionTemp.isChecked():
+            self.statusbar.showMessage('Add temperature data')
+            self.climatetempplot = self.maingraph.plot()
+            self.climatetempplot.setPen(pg.mkPen('silver', width=2))
+            self.climatetempplot.setData(self.climate_time_array, self.climate_temp_array)
+            self.datatempplot = self.maingraph.plot()
+            self.datatempplot.setPen(pg.mkPen('black', width=2))
+            self.datatempplot.setData(self.climate_time_array, self.data_temp_array)
+            self.climatetempplot2 = self.zoomgraph.plot()
+            self.climatetempplot2.setPen(pg.mkPen('silver', width=2))
+            self.climatetempplot2.setData(self.climate_time_array, self.climate_temp_array)
+            self.datatempplot2 = self.zoomgraph.plot()
+            self.datatempplot2.setPen(pg.mkPen('black', width=2))
+            self.datatempplot2.setData(self.climate_time_array, self.data_temp_array)
+
+
+            self.zoomed()
+        else:
+            print('cleartemp')
+            self.statusbar.showMessage('Remove temperature data')
+            self.climatetempplot.clear()
+            self.datatempplot.clear()
+            self.climatetempplot2.clear()
+            self.datatempplot2.clear()
+            self.zoomed()
+
+
+    def humidgraph(self):
+        if self.actionHumid.isChecked():
+            self.statusbar.showMessage('Add humidity data')
+            self.climatehumidplot = self.maingraph.plot()
+            self.climatehumidplot.setPen(pg.mkPen('lightsalmon', width=2))
+            self.climatehumidplot.setData(self.climate_time_array, self.climate_humidity_array)
+            self.datahumidplot = self.maingraph.plot()
+            self.datahumidplot.setPen(pg.mkPen('red', width=2))
+            self.datahumidplot.setData(self.climate_time_array, self.data_humidity_array)
+            self.climatehumidplot2 = self.zoomgraph.plot()
+            self.climatehumidplot2.setPen(pg.mkPen('lightsalmon', width=2))
+            self.climatehumidplot2.setData(self.climate_time_array, self.climate_humidity_array)
+            self.datahumidplot2 = self.zoomgraph.plot()
+            self.datahumidplot2.setPen(pg.mkPen('red', width=2))
+            self.datahumidplot2.setData(self.climate_time_array, self.data_humidity_array)
+            self.zoomed()
+        else:
+            print('cleartemp')
+            self.statusbar.showMessage('Remove humidity data')
+            self.climatehumidplot.clear()
+            self.datahumidplot.clear()
+            self.climatehumidplot2.clear()
+            self.datahumidplot2.clear()
+            self.zoomed()
+
+    def barograph(self):
+        if self.actionBaro.isChecked():
+            self.statusbar.showMessage('Add pressure data')
+            self.climatebaroplot = self.maingraph.plot()
+            self.climatebaroplot.setPen(pg.mkPen('lightblue', width=2))
+            self.climatebaroplot.setData(self.climate_time_array, self.climate_baro_array)
+            self.databaroplot = self.maingraph.plot()
+            self.databaroplot.setPen(pg.mkPen('blue', width=2))
+            self.databaroplot.setData(self.climate_time_array, self.data_baro_array)
+            self.climatebaroplot2 = self.zoomgraph.plot()
+            self.climatebaroplot2.setPen(pg.mkPen('lightblue', width=2))
+            self.climatebaroplot2.setData(self.climate_time_array, self.climate_baro_array)
+            self.databaroplot2 = self.zoomgraph.plot()
+            self.databaroplot2.setPen(pg.mkPen('blue', width=2))
+            self.databaroplot2.setData(self.climate_time_array, self.data_baro_array)
+            self.zoomed()
+        else:
+            print('cleartemp')
+            self.statusbar.showMessage('Remove pressure data')
+            self.climatebaroplot.clear()
+            self.databaroplot.clear()
+            self.climatebaroplot2.clear()
+            self.databaroplot2.clear()
+            self.zoomed()
+
+    def zoomed(self):
+        print('zoom')
+        def updatePlot():
+            self.zoomgraph.setXRange(*self.zoomarea.getRegion(), padding=0)
+
+        def updateRegion():
+            self.zoomarea.setRegion(self.zoomgraph.getViewBox().viewRange()[0])
+
+        self.zoomarea.sigRegionChanged.connect(updatePlot)
+        self.zoomgraph.sigXRangeChanged.connect(updateRegion)
+        updatePlot()
+
 
 if __name__ == "__main__":
     import sys
